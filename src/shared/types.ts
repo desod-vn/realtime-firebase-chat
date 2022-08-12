@@ -20,21 +20,15 @@ export interface SavedUser {
 
 export interface MessageItem {
   id?: string;
-  sender: string;
+  author: string;
   content: string;
-  replyTo?: string;
-  file?: {
-    name: string;
-    size: number;
-  };
-  createdAt: {
+  idRoom: string;
+  nameFile?: string;
+  timeStamp: {
     seconds: number;
     nanoseconds: number;
   };
-  type: "text" | "image" | "file" | "sticker" | "removed";
-  reactions: {
-    [key: string]: number;
-  };
+  typeMessage: "text" | "image" | "file" | "sticker" | "removed";
 }
 
 export interface StickerCollection {

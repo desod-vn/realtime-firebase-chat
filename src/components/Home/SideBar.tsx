@@ -60,7 +60,7 @@ const SideBar: FC = () => {
                     onClick={() => setIsDropdownOpened((prev) => !prev)}
                     className="h-8 w-8 cursor-pointer rounded-full object-cover"
                     src={
-                      currentUser?.nguoiDung_AnhDinhKem[0].url
+                      !!currentUser?.nguoiDung_AnhDinhKem && currentUser?.nguoiDung_AnhDinhKem.length && currentUser?.nguoiDung_AnhDinhKem[0].url
                         ? IMAGE_PROXY(currentUser?.nguoiDung_AnhDinhKem[0].url)
                         : DEFAULT_AVATAR
                     }

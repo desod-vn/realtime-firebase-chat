@@ -34,47 +34,28 @@ const LeftMessage: FC<LeftMessageProps> = ({
   docs,
   setReplyInfo,
 }) => {
-  const [isSelectReactionOpened, setIsSelectReactionOpened] = useState(false);
-  const currentUser = useStore((state) => state.currentUser);
-
   const [isImageViewOpened, setIsImageViewOpened] = useState(false);
 
   const formattedDate = formatDate(
-    message.createdAt.seconds ? message.createdAt.seconds * 1000 : Date.now()
+    message.timeStamp.seconds ? message.timeStamp.seconds * 1000 : Date.now()
   );
 
   return (
     <div id={`message-${message.id}`}>
       <div
-        className={`${
-          conversation.users.length === 2 ? "px-8" : "px-[70px]"
-        } -mb-2 flex`}
+        className={`group relative flex items-stretch gap-2 px-8`}
       >
-        {!!message.replyTo && (
-          <ReplyBadge messageId={message.replyTo as string} />
-        )}
-      </div>
-      <div
-        onClick={(e) => {
-          if (e.detail === 2 && message.type !== "removed") {
-            setReplyInfo(message);
-          }
-        }}
-        className={`group relative flex items-stretch gap-2 px-8 ${
-          Object.keys(message.reactions || {}).length > 0 ? "mb-2" : ""
-        }`}
-      >
-        {conversation.users.length > 2 && (
+        {conversation.idMember.length > 2 && (
           <div onClick={(e) => e.stopPropagation()} className="h-full py-1">
             <div className="h-[30px] w-[30px]">
-              {docs[index - 1]?.data()?.sender !== message.sender && (
-                <AvatarFromId uid={message.sender} />
+              {docs[index - 1]?.data()?.author !== message.author && (
+                <AvatarFromId uid={message.author} />
               )}
             </div>
           </div>
         )}
 
-        {message.type === "text" ? (
+        {message.typeMessage === "text" ? (
           <>
             {EMOJI_REGEX.test(message.content) ? (
               <div
@@ -89,7 +70,7 @@ const LeftMessage: FC<LeftMessageProps> = ({
                 onClick={(e) => e.stopPropagation()}
                 title={formattedDate}
                 className={`bg-dark-lighten rounded-lg p-2 text-white ${
-                  conversation.users.length === 2
+                  conversation.idMember.length === 2
                     ? "after:border-dark-lighten relative after:absolute after:right-full after:bottom-[6px] after:border-8 after:border-t-transparent after:border-l-transparent"
                     : ""
                 }`}
@@ -113,7 +94,7 @@ const LeftMessage: FC<LeftMessageProps> = ({
               </div>
             )}
           </>
-        ) : message.type === "image" ? (
+        ) : message.typeMessage === "image" ? (
           <>
             <img
               onClick={(e) => {
@@ -131,36 +112,7 @@ const LeftMessage: FC<LeftMessageProps> = ({
               setIsOpened={setIsImageViewOpened}
             />
           </>
-        ) : message.type === "file" ? (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            title={formattedDate}
-            className="bg-dark-lighten flex items-center gap-2 overflow-hidden rounded-lg py-3 px-5"
-          >
-            <FileIcon
-              className="h-4 w-4 object-cover"
-              extension={message.file?.name.split(".").slice(-1)[0] as string}
-            />
-            <div>
-              <p className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap">
-                {message.file?.name}
-              </p>
-
-              <p className="text-sm text-gray-400">
-                {formatFileSize(message.file?.size as number)}
-              </p>
-            </div>
-
-            <a
-              href={message.content}
-              download
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="bx bxs-download text-2xl"></i>
-            </a>
-          </div>
-        ) : message.type === "sticker" ? (
+        ) : message.typeMessage === "sticker" ? (
           <SpriteRenderer
             onClick={(e) => e.stopPropagation()}
             title={formattedDate}
@@ -175,50 +127,6 @@ const LeftMessage: FC<LeftMessageProps> = ({
           >
             Message has been removed
           </div>
-        )}
-
-        {message.type !== "removed" && (
-          <>
-            <button
-              onClick={() => setIsSelectReactionOpened(true)}
-              className="text-lg text-gray-500 opacity-0 transition hover:text-gray-300 group-hover:opacity-100"
-            >
-              <i className="bx bx-smile"></i>
-            </button>
-            <button
-              onClick={(e) => {
-                setReplyInfo(message);
-                e.stopPropagation();
-              }}
-              className="text-gray-500 opacity-0 transition hover:text-gray-300 group-hover:opacity-100"
-            >
-              <ReplyIcon />
-            </button>
-
-            {isSelectReactionOpened && (
-              <ClickAwayListener
-                onClickAway={() => setIsSelectReactionOpened(false)}
-              >
-                {(ref) => (
-                  <ReactionPopup
-                    position={"left"}
-                    forwardedRef={ref}
-                    setIsOpened={setIsSelectReactionOpened}
-                    messageId={message.id as string}
-                    currentReaction={
-                      message.reactions?.[currentUser?.uid as string] || 0
-                    }
-                  />
-                )}
-              </ClickAwayListener>
-            )}
-          </>
-        )}
-        {Object.keys(message.reactions || {}).length > 0 && (
-          <ReactionStatus
-            message={message}
-            position={conversation.users.length > 2 ? "left-tab" : "left"}
-          />
         )}
       </div>
     </div>

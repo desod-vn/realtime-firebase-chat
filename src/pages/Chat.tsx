@@ -49,12 +49,12 @@ const Chat: FC = () => {
         ) : (
           <>
             <ChatHeader conversation={conversation} />
-            {/* <ChatView
+            <ChatView
               replyInfo={replyInfo}
               setReplyInfo={setReplyInfo}
               inputSectionOffset={inputSectionOffset}
               conversation={conversation}
-            /> */}
+            />
             <InputSection
               setInputSectionOffset={setInputSectionOffset}
               replyInfo={replyInfo}

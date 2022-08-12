@@ -3,6 +3,7 @@ import { FC, Fragment, useEffect, useRef, useState } from "react";
 import {
   collection,
   doc,
+  where,
   limitToLast,
   orderBy,
   query,
@@ -43,15 +44,15 @@ const ChatView: FC<ChatViewProps> = ({
   const { data, loading, error } = useCollectionQuery(
     `conversation-data-${conversationId}-${limitCount}`,
     query(
-      collection(db, "conversations", conversationId as string, "messages"),
-      orderBy("createdAt"),
+      collection(db, "message"),
+      where("idRoom", "==", conversationId?.toString()),
+      orderBy("timeStamp"),
       limitToLast(limitCount)
     )
   );
 
   const dataRef = useRef(data);
   const conversationIdRef = useRef(conversationId);
-  const isWindowFocus = useRef(true);
 
   useEffect(() => {
     dataRef.current = data;
@@ -60,48 +61,6 @@ const ChatView: FC<ChatViewProps> = ({
   useEffect(() => {
     conversationIdRef.current = conversationId;
   }, [conversationId]);
-
-  useEffect(() => {
-    if (isWindowFocus.current) updateSeenStatus();
-
-    scrollBottomRef.current?.scrollIntoView();
-
-    setTimeout(() => {
-      scrollBottomRef.current?.scrollIntoView();
-    }, 100);
-  }, [data?.docs?.slice(-1)?.[0]?.id || ""]);
-
-  const updateSeenStatus = () => {
-    if (dataRef.current?.empty) return;
-
-    const lastDoc = dataRef.current?.docs?.slice(-1)?.[0];
-
-    if (!lastDoc) return;
-
-    updateDoc(doc(db, "conversations", conversationIdRef.current as string), {
-      [`seen.${currentUser?.uid}`]: lastDoc.id,
-    });
-  };
-
-  useEffect(() => {
-    const focusHandler = () => {
-      isWindowFocus.current = true;
-
-      updateSeenStatus();
-    };
-
-    const blurHandler = () => {
-      isWindowFocus.current = false;
-    };
-
-    addEventListener("focus", focusHandler);
-    addEventListener("blur", blurHandler);
-
-    return () => {
-      removeEventListener("focus", focusHandler);
-      removeEventListener("blur", blurHandler);
-    };
-  }, []);
 
   if (loading)
     return (
@@ -145,7 +104,7 @@ const ChatView: FC<ChatViewProps> = ({
           .map((doc) => ({ id: doc.id, ...doc.data() } as MessageItem))
           .map((item, index) => (
             <Fragment key={item.id}>
-              {item.sender === currentUser?.uid ? (
+              {item.author === "" + currentUser?.id ? (
                 <RightMessage
                   replyInfo={replyInfo}
                   setReplyInfo={setReplyInfo}
@@ -160,20 +119,6 @@ const ChatView: FC<ChatViewProps> = ({
                   docs={data?.docs}
                   conversation={conversation}
                 />
-              )}
-              {Object.entries(conversation.seen).filter(
-                ([key, value]) => key !== currentUser?.uid && value === item.id
-              ).length > 0 && (
-                <div className="flex justify-end gap-[1px] px-8">
-                  {Object.entries(conversation.seen)
-                    .filter(
-                      ([key, value]) =>
-                        key !== currentUser?.uid && value === item.id
-                    )
-                    .map(([key, value]) => (
-                      <AvatarFromId key={key} uid={key} size={14} />
-                    ))}
-                </div>
               )}
             </Fragment>
           ))}

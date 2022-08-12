@@ -48,31 +48,25 @@ const InputSection: FC<InputSectionProps> = ({
   setReplyInfo,
 }) => {
   const [inputValue, setInputValue] = useState("");
-
   const [fileUploading, setFileUploading] = useState(false);
-
   const [previewFiles, setPreviewFiles] = useState<string[]>([]);
-
   const [isStickerPickerOpened, setIsStickerPickerOpened] = useState(false);
   const [isIconPickerOpened, setIsIconPickerOpened] = useState(false);
-  const [isGifPickerOpened, setIsGifPickerOpened] = useState(false);
-
   const [isAlertOpened, setIsAlertOpened] = useState(false);
   const [alertText, setAlertText] = useState("");
-
   const { id: conversationId } = useParams();
   const currentUser = useStore((state) => state.currentUser);
-
   const textInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [fileDragging, setFileDragging] = useState(false);
 
   const updateTimestamp = () => {
-    updateDoc(doc(db, "conversations", conversationId as string), {
-      updatedAt: serverTimestamp(),
-    });
+    updateDoc(
+      doc(db, "room", conversationId as string),
+      {
+        timeStamp: serverTimestamp(),
+      });
   };
 
   useEffect(() => {
@@ -121,14 +115,15 @@ const InputSection: FC<InputSectionProps> = ({
 
     setReplyInfo && setReplyInfo(null);
 
-    addDoc(
-      collection(db, "conversations", conversationId as string, "messages"),
+    const s = await addDoc(
+      collection(db, "message"),
       {
-        sender: currentUser?.uid,
+        idRoom: conversationId,
+        author: "" + currentUser?.id,
         content: replacedInputValue.trim(),
-        type: "text",
-        createdAt: serverTimestamp(),
-        replyTo: replyInfo?.id || null,
+        typeMessage: "text",
+        timeStamp: serverTimestamp(),
+        nameFile: null
       }
     );
 
@@ -137,12 +132,14 @@ const InputSection: FC<InputSectionProps> = ({
 
   const sendSticker = (url: string) => {
     addDoc(
-      collection(db, "conversations", conversationId as string, "messages"),
+      collection(db, "message"),
       {
-        sender: currentUser?.uid,
+        idRoom: conversationId,
+        author: "" + currentUser?.id,
         content: url,
-        type: "sticker",
-        createdAt: serverTimestamp(),
+        typeMessage: "sticker",
+        timeStamp: serverTimestamp(),
+        nameFile: null
       }
     );
 
@@ -154,7 +151,7 @@ const InputSection: FC<InputSectionProps> = ({
       const TWENTY_MB = 1024 * 1024 * 20;
 
       if (file.size > TWENTY_MB) {
-        setAlertText("Max file size is 20MB");
+        setAlertText("Kích thước ảnh tối đa là 20MB");
         setIsAlertOpened(true);
         return;
       }
@@ -168,19 +165,15 @@ const InputSection: FC<InputSectionProps> = ({
       const downloadURL = await getDownloadURL(fileReference);
 
       addDoc(
-        collection(db, "conversations", conversationId as string, "messages"),
+        collection(db, "message"),
         {
-          sender: currentUser?.uid,
+          idRoom: conversationId,
+          author: "" + currentUser?.id,
           content: downloadURL,
-          type: file.type.startsWith("image") ? "image" : "file",
-          file: file.type.startsWith("image")
-            ? null
-            : {
-                name: file.name,
-                size: file.size,
-              },
-          createdAt: serverTimestamp(),
-        }
+          typeMessage: "image",
+          timeStamp: serverTimestamp(),
+          nameFile: file.name
+        },
       );
 
       setFileUploading(false);
@@ -232,19 +225,6 @@ const InputSection: FC<InputSectionProps> = ({
         });
       });
     }
-  };
-
-  const sendGif = (url: string) => {
-    addDoc(
-      collection(db, "conversations", conversationId as string, "messages"),
-      {
-        sender: currentUser?.uid,
-        content: url,
-        type: "image",
-        file: null,
-        createdAt: serverTimestamp(),
-      }
-    );
   };
 
   useEffect(() => {
@@ -318,7 +298,7 @@ const InputSection: FC<InputSectionProps> = ({
     <>
       {fileDragging && (
         <div className="pointer-events-none fixed top-0 left-0 z-20 flex h-full w-full select-none items-center justify-center backdrop-blur-sm">
-          <h1 className="text-3xl">Drop file to send</h1>
+          <h1 className="text-3xl">Thả file để gửi</h1>
         </div>
       )}
       {previewFiles.length > 0 && (
@@ -340,36 +320,6 @@ const InputSection: FC<InputSectionProps> = ({
           ))}
         </div>
       )}
-      {previewFiles.length === 0 && !!replyInfo && (
-        <div className="border-dark-lighten flex h-[76px] justify-between border-t p-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <ReplyIcon />
-              <p>
-                Replying
-                {currentUser?.uid === replyInfo.sender ? " to yourself" : ""}
-              </p>
-            </div>
-            {replyInfo.type === "text" ? (
-              <p className="max-w-[calc(100vw-65px)] overflow-hidden text-ellipsis whitespace-nowrap md:max-w-[calc(100vw-420px)]">
-                {replyInfo.content}
-              </p>
-            ) : replyInfo.type === "image" ? (
-              "An image"
-            ) : replyInfo.type === "file" ? (
-              "A file"
-            ) : replyInfo.type === "sticker" ? (
-              "A sticker"
-            ) : (
-              "Message has been removed"
-            )}
-          </div>
-
-          <button onClick={() => setReplyInfo && setReplyInfo(null)}>
-            <i className="bx bx-x text-3xl"></i>
-          </button>
-        </div>
-      )}
       <div
         className={`border-dark-lighten flex h-16 items-stretch gap-1 border-t px-4 ${
           disabled ? "pointer-events-none select-none" : ""
@@ -389,19 +339,6 @@ const InputSection: FC<InputSectionProps> = ({
           accept="image/*"
           onChange={handleFileInputChange}
         />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="text-primary flex flex-shrink-0 items-center text-2xl"
-        >
-          <i className="bx bx-link-alt"></i>
-        </button>
-        <input
-          ref={fileInputRef}
-          hidden
-          className="hidden"
-          type="file"
-          onChange={handleFileInputChange}
-        />
         <div className="relative flex flex-shrink-0 items-center">
           {isStickerPickerOpened && (
             <StickerPicker
@@ -415,19 +352,6 @@ const InputSection: FC<InputSectionProps> = ({
             className="flex items-center"
           >
             <StickerIcon />
-          </button>
-        </div>
-
-        <div className="relative flex flex-shrink-0 items-center">
-          {isGifPickerOpened && (
-            <GifPicker setIsOpened={setIsGifPickerOpened} onSelect={sendGif} />
-          )}
-
-          <button
-            onClick={() => setIsGifPickerOpened(true)}
-            className="flex items-center"
-          >
-            <GifIcon />
           </button>
         </div>
 
