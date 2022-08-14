@@ -16,18 +16,11 @@ const App: FC = () => {
   const setCurrentUser = useStore((state) => state.setCurrentUser);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const user = localStorage.getItem('user') || null;
       if (user) {
-        setCurrentUser(user);
-        setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          phoneNumber: user.phoneNumber || user.providerData?.[0]?.phoneNumber,
-        });
+        const parserUser = JSON.parse(user)
+        setCurrentUser(parserUser);
       } else setCurrentUser(null);
-    });
   }, []);
 
   if (typeof currentUser === "undefined")

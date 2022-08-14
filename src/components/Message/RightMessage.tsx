@@ -4,14 +4,13 @@ import {
   formatDate,
   splitLinkFromMessage,
 } from "../../shared/utils";
-
+import ReactionStatus from "../Chat/ReactionStatus";
 import { EMOJI_REGEX } from "../../shared/constants";
 import FileIcon from "../FileIcon";
 import ImageView from "../ImageView";
 import { MessageItem } from "../../shared/types";
 import SpriteRenderer from "../SpriteRenderer";
 import { db } from "../../shared/firebase";
-import { useParams } from "react-router-dom";
 
 interface RightMessageProps {
   message: MessageItem;
@@ -20,23 +19,17 @@ interface RightMessageProps {
 }
 
 const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
-  const [isSelectReactionOpened, setIsSelectReactionOpened] = useState(false);
-
-  const { id: conversationId } = useParams();
-
   const [isImageViewOpened, setIsImageViewOpened] = useState(false);
-
   const removeMessage = (messageId: string) => {
     updateDoc(
-      doc(db, "message", conversationId as string, "messages", messageId),
+      doc(db, "message", messageId as string),
       {
-        type: "removed",
-        file: null,
+        typeMessage: "removed",
         content: "",
-        reactions: [],
       }
     );
   };
+
 
   const formattedDate = formatDate(
     message.timeStamp?.seconds ? message.timeStamp?.seconds * 1000 : Date.now()
@@ -144,7 +137,7 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
             title={formattedDate}
             className="border-dark-lighten rounded-lg border p-3 text-gray-400"
           >
-            Message has been removed
+            Tin nhắn đã được thu hồi
           </div>
         )}
 
@@ -160,6 +153,12 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
               <i className="bx bxs-trash"></i>
             </button>
           </>
+        )}
+        {Object.keys(message.reactions || {}).length > 0 && (
+          <ReactionStatus
+            message={message}
+            position="right"
+          />
         )}
       </div>
     </div>

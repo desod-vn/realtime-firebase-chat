@@ -9,7 +9,6 @@ import SelectConversation from "./SelectConversation";
 import Spin from "react-cssfx-loading/src/Spin";
 import { auth } from "../../shared/firebase";
 import { db } from "../../shared/firebase";
-import { signOut } from "firebase/auth";
 import { useCollectionQuery } from "../../hooks/useCollectionQuery";
 import { useStore } from "../../store";
 
@@ -25,9 +24,14 @@ const SideBar: FC = () => {
     query(
       collection(db, "room"),
       where("idMember", "array-contains", currentUser?.id.toString()),
+      orderBy("timeStamp", "desc")
     )
   );
-
+  
+  const signOut = () => {
+    localStorage.clear();
+    window.location.reload();
+  }
   const location = useLocation();
 
   return (
@@ -41,14 +45,13 @@ const SideBar: FC = () => {
       >
         <div className="border-dark-lighten flex h-20 items-center justify-between border-b px-6">
           <Link to="/" className="flex items-center gap-1">
-            <img className="h-8 w-8" src="/icon.svg" alt="" />
-            <h1 className="text-xl">FireVerse</h1>
+            <img className="w-40" src="/logo.png" alt="" />
           </Link>
 
           <div className="flex items-center gap-1">
             <button
               onClick={() => setCreateConversationOpened(true)}
-              className="bg-dark-lighten h-8 w-8 rounded-full"
+              className="h-8 w-8 rounded-full"
             >
               <i className="bx bxs-edit text-xl"></i>
             </button>
@@ -68,14 +71,28 @@ const SideBar: FC = () => {
                   />
 
                   <div
-                    className={`border-dark-lighten bg-dark absolute top-full right-0 flex w-max origin-top-right flex-col items-stretch overflow-hidden rounded-md border py-1 shadow-lg transition-all duration-200 ${
+                    className={`border-dark-lighten bg-white absolute top-full right-0 flex w-max origin-top-right flex-col items-stretch overflow-hidden rounded-md border py-1 shadow-lg transition-all duration-200 ${
                       isDropdownOpened
                         ? "visible scale-100 opacity-100"
                         : "invisible scale-0 opacity-0"
                     }`}
                   >
+                    <p className="p-2">
+                      Tên:
+                      { currentUser?.ten }
+                    </p>
+                    <p className="p-2">
+                      Email:
+                      { currentUser?.email }
+                    </p>
+                    <p className="p-2">
+                      TK:
+                      { currentUser?.taiKhoan }
+                    </p>
+
+                    
                     <button
-                      onClick={() => signOut(auth)}
+                      onClick={() => signOut()}
                       className="hover:bg-dark-lighten flex items-center gap-1 px-3 py-1 transition duration-300"
                     >
                       <i className="bx bx-log-out text-xl"></i>

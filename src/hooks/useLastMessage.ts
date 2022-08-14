@@ -3,6 +3,7 @@ import {
   limitToLast,
   onSnapshot,
   orderBy,
+  where,
   query,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -23,8 +24,9 @@ export const useLastMessage = (conversationId: string) => {
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
-        collection(db, "conversations", conversationId, "messages"),
-        orderBy("createdAt"),
+        collection(db, "message"),
+        where("idRoom", "==", conversationId),
+        orderBy("timeStamp"),
         limitToLast(1)
       ),
       (snapshot) => {
@@ -37,21 +39,17 @@ export const useLastMessage = (conversationId: string) => {
           setError(false);
           return;
         }
-        const type = snapshot.docs?.[0]?.data()?.type;
+        const type = snapshot.docs?.[0]?.data()?.typeMessage;
         let response =
           type === "image"
             ? "An image"
-            : type === "file"
-            ? `File: ${
-                snapshot.docs[0]?.data()?.file?.name.split(".").slice(-1)[0]
-              }`
             : type === "sticker"
             ? "A sticker"
             : type === "removed"
             ? "Message removed"
             : (snapshot.docs[0].data().content as string);
 
-        const seconds = snapshot.docs[0]?.data()?.createdAt?.seconds;
+        const seconds = snapshot.docs[0]?.data()?.timeStamp?.seconds;
         const formattedDate = formatDate(seconds ? seconds * 1000 : Date.now());
 
         response =

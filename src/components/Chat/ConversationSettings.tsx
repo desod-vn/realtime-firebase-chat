@@ -135,19 +135,19 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-dark mx-2 w-full max-w-[500px] rounded-lg"
+        className="bg-stone-300 mx-2 w-full max-w-[500px] rounded-lg"
       >
         <div className="border-dark-lighten flex items-center justify-between border-b py-3 px-3">
           <div className="flex-1"></div>
           <div className="flex flex-1 items-center justify-center">
             <h1 className="whitespace-nowrap text-center text-2xl">
-              Cài đăt cuộc trò chuyện
+              Cài đặt cuộc trò chuyện
             </h1>
           </div>
           <div className="flex flex-1 items-center justify-end">
             <button
               onClick={() => setIsOpened(false)}
-              className="bg-dark-lighten flex h-8 w-8 items-center justify-center rounded-full"
+              className="bg-stone-400 flex h-8 w-8 items-center justify-center rounded-full"
             >
               <i className="bx bx-x text-2xl"></i>
             </button>
@@ -159,7 +159,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
             <>
               <button
                 onClick={() => setIsChangeChatNameOpened((prev) => !prev)}
-                className="bg-dark flex items-center justify-between gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
+                className="bg-stone-300 flex items-center justify-between gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
               >
                 <div className="flex items-center gap-3">
                   <i className="bx bx-edit-alt text-2xl"></i>
@@ -178,9 +178,9 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
                     <input
                       value={chatNameInputValue}
                       onChange={(e) => setChatNameInputValue(e.target.value)}
-                      className="border-dark-lighten bg-dark h-full w-full rounded-lg border p-2 outline-none transition duration-300 focus:border-gray-500"
+                      className="border-dark-lighten bg-stone-300 h-full w-full rounded-lg border p-2 outline-none transition duration-300 focus:border-gray-500"
                       type="text"
-                      placeholder="Chat name"
+                      placeholder="Tên cuộc trò chuyện"
                     />
                   </div>
                   <button className="bg-primary flex-shrink-0 rounded px-3 transition duration-300 hover:brightness-110">
@@ -191,7 +191,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
 
               <button
                 onClick={() => setIsAddMemberOpened((prev) => !prev)}
-                className="bg-dark flex items-center gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
+                className="bg-stone-300 flex items-center gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
               >
                 <i className="bx bxs-group text-2xl"></i>
                 <span>Thành viên cuộc trò chuyện</span>
@@ -210,12 +210,12 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
                     <button 
                       disabled={selected.length <= 2}
                       onClick={() => handleChangeMember()}
-                      className="bg-dark-lighten rounded-lg py-2 px-3 transition duration-300 hover:brightness-125 disabled:!brightness-[80%]"  
+                      className="bg-stone-400 rounded-lg py-2 px-3 transition duration-300 hover:brightness-125 disabled:!brightness-[80%]"  
                     >
                       Cập nhật
                     </button>
                   </div>
-                  <div className="mx-5 bg-neutral-700 h-40 p-2 overflow-y-auto">
+                  <div className="mx-5 bg-neutral-400 h-40 p-2 overflow-y-auto">
                     {
                       selected.map(__ => {
                         const findUser = users?.data.find((user : any) => user?.idNguoiDung == __);
@@ -237,7 +237,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
                       <div
                         key={index}
                         onClick={() => handleToggle(__?.idNguoiDung)}
-                        className="hover:bg-dark-lighten flex cursor-pointer items-center gap-2 px-5 py-2 transition"
+                        className="hover:bg-stone-400 flex cursor-pointer items-center gap-2 px-5 py-2 transition"
                       >
                         <input
                           className="flex-shrink-0 cursor-pointer"
@@ -257,7 +257,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
               </div>)}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="bg-dark flex items-center gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
+                className="bg-stone-300 flex items-center gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
               >
                 <i className="bx bx-image-alt text-2xl"></i>
                 <span>Đổi ảnh nhóm</span>
@@ -284,7 +284,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
           {conversation?.idMember.length > 2 && (
             <button
               onClick={() => leaveGroup()}
-              className="bg-dark flex items-center justify-between gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
+              className="bg-stone-300 flex items-center justify-between gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
             >
               <div className="flex items-center gap-3">
                 <i className="bx bx-log-out text-2xl"></i>
@@ -295,7 +295,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
           {conversation?.hostId == "" + currentUser?.id && (
             <button
               onClick={() => removeGroup()}
-              className="bg-dark flex items-center justify-between gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
+              className="bg-stone-300 flex items-center justify-between gap-3 rounded-lg px-3 py-2 transition duration-300 hover:brightness-125"
             >
               <div className="flex items-center gap-3">
                 <i className="bx bx-x text-2xl"></i>

@@ -17,7 +17,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({ conversation }) => {
   const [isGroupMembersOpened, setIsGroupMembersOpened] = useState(false);
   const [isViewMediaOpened, setIsViewMediaOpened] = useState(false);
 
-  const avatarUrl = conversation.avatarMember.slice(conversation.avatarMember.indexOf('http'), conversation.avatarMember.indexOf(', loai'))
+  // const avatarUrl = conversation.avatarMember.slice(conversation.avatarMember.indexOf('http'), conversation.avatarMember.indexOf(', loai'))
+  const avatarUrl = ''
 
   return (
     <>

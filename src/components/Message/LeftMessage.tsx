@@ -2,19 +2,15 @@ import { ConversationInfo, MessageItem } from "../../shared/types";
 import { FC, Fragment, useState } from "react";
 import {
   formatDate,
-  formatFileSize,
   splitLinkFromMessage,
 } from "../../shared/utils";
 
 import AvatarFromId from "../Chat/AvatarFromId";
 import ClickAwayListener from "../ClickAwayListener";
 import { EMOJI_REGEX } from "../../shared/constants";
-import FileIcon from "../FileIcon";
 import ImageView from "../ImageView";
 import ReactionPopup from "../Chat/ReactionPopup";
 import ReactionStatus from "../Chat/ReactionStatus";
-import ReplyBadge from "../Chat/ReplyBadge";
-import ReplyIcon from "../Icon/ReplyIcon";
 import SpriteRenderer from "../SpriteRenderer";
 import { useStore } from "../../store";
 
@@ -34,6 +30,9 @@ const LeftMessage: FC<LeftMessageProps> = ({
   docs,
   setReplyInfo,
 }) => {
+  const [isSelectReactionOpened, setIsSelectReactionOpened] = useState(false);
+  const currentUser = useStore((state) => state.currentUser);
+
   const [isImageViewOpened, setIsImageViewOpened] = useState(false);
 
   const formattedDate = formatDate(
@@ -43,12 +42,14 @@ const LeftMessage: FC<LeftMessageProps> = ({
   return (
     <div id={`message-${message.id}`}>
       <div
-        className={`group relative flex items-stretch gap-2 px-8`}
+        className={`group relative flex items-stretch gap-2 px-8 ${
+          Object.keys(message?.reactions || {}).length > 0 ? "mb-2" : ""
+        }`}
       >
         {conversation.idMember.length > 2 && (
           <div onClick={(e) => e.stopPropagation()} className="h-full py-1">
             <div className="h-[30px] w-[30px]">
-              {docs[index - 1]?.data()?.author !== message.author && (
+              {docs[index - 1]?.data()?.sender !== message.author && (
                 <AvatarFromId uid={message.author} />
               )}
             </div>
@@ -125,8 +126,43 @@ const LeftMessage: FC<LeftMessageProps> = ({
             title={formattedDate}
             className="border-dark-lighten rounded-lg border p-3 text-gray-400"
           >
-            Message has been removed
+            Tin nhắn đã được thu hồi
           </div>
+        )}
+
+        {message.typeMessage !== "removed" && (
+          <>
+            <button
+              onClick={() => setIsSelectReactionOpened(true)}
+              className="text-lg text-gray-500 opacity-0 transition hover:text-gray-300 group-hover:opacity-100"
+            >
+              <i className="bx bx-smile"></i>
+            </button>
+
+            {isSelectReactionOpened && (
+              <ClickAwayListener
+                onClickAway={() => setIsSelectReactionOpened(false)}
+              >
+                {(ref) => (
+                  <ReactionPopup
+                    position={"left"}
+                    forwardedRef={ref}
+                    setIsOpened={setIsSelectReactionOpened}
+                    messageId={message.id as string}
+                    currentReaction={
+                      message?.reactions?.[currentUser?.uid as string] || 0
+                    }
+                  />
+                )}
+              </ClickAwayListener>
+            )}
+          </>
+        )}
+        {Object.keys(message.reactions || {}).length > 0 && (
+          <ReactionStatus
+            message={message}
+            position={conversation.idMember.length > 2 ? "left-tab" : "left"}
+          />
         )}
       </div>
     </div>

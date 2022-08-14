@@ -22,9 +22,6 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import Alert from "../Alert";
 import ClickAwayListener from "../ClickAwayListener";
 import { EMOJI_REPLACEMENT } from "../../shared/constants";
-import GifIcon from "../Icon/GifIcon";
-import GifPicker from "./GifPicker";
-import ReplyIcon from "../Icon/ReplyIcon";
 import Spin from "react-cssfx-loading/src/Spin";
 import StickerIcon from "../Icon/StickerIcon";
 import StickerPicker from "./StickerPicker";
@@ -58,13 +55,13 @@ const InputSection: FC<InputSectionProps> = ({
   const currentUser = useStore((state) => state.currentUser);
   const textInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileDragging, setFileDragging] = useState(false);
 
   const updateTimestamp = () => {
     updateDoc(
       doc(db, "room", conversationId as string),
       {
+        seen: ["" + currentUser?.id],
         timeStamp: serverTimestamp(),
       });
   };
@@ -370,7 +367,7 @@ const InputSection: FC<InputSectionProps> = ({
               }}
               onKeyDown={handleReplaceEmoji}
               onPaste={handlePaste}
-              className="bg-dark-lighten h-9 w-full rounded-full pl-3 pr-10 outline-none"
+              className="h-9 w-full rounded-full pl-3 pr-10 outline-none"
               type="text"
               placeholder="Message..."
             />

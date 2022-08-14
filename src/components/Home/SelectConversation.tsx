@@ -3,6 +3,7 @@ import { ConversationInfo } from "../../shared/types";
 import { FC } from "react";
 import { useStore } from "../../store";
 import { DEFAULT_AVATAR, IMAGE_PROXY } from "../../shared/constants";
+import { useLastMessage } from "../../hooks/useLastMessage";
 
 interface SelectConversationProps {
   conversation: ConversationInfo;
@@ -16,27 +17,40 @@ const SelectConversation: FC<SelectConversationProps> = ({
   const currentUser = useStore((state) => state.currentUser);
   const { id } = useParams();
 
+  const {
+    data: lastMessage,
+  } = useLastMessage(conversationId);
 
   if (conversation.nameMember.length === 2) {
-    const avatarUrl = conversation.avatarMember.slice(conversation.avatarMember.indexOf('http'), conversation.avatarMember.indexOf(', loai'))
-    
+    // const avatarUrl = conversation.avatarMember.slice(conversation.avatarMember.indexOf('http'), conversation.avatarMember.indexOf(', loai'))
+    const avatarUrl = ''
     return (
       <Link
         to={`/${conversationId}`}
-        className={`hover:bg-dark-lighten relative flex items-stretch gap-2 py-2 px-5 transition duration-300 ${
-          conversationId === id ? "!bg-[#263342]" : ""
+        className={`hover:bg-stone-400 relative flex items-stretch gap-2 py-2 px-5 transition duration-300 ${
+          conversationId === id ? "bg-stone-500" : ""
+        }  ${
+          conversation?.seen && !conversation?.seen.includes("" + currentUser?.id) ? "bg-blue-500" : ""
         }`}
       >
         <img
-          className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
-          src={IMAGE_PROXY(avatarUrl)}
+          className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
+          src={!!avatarUrl ? IMAGE_PROXY(avatarUrl) : DEFAULT_AVATAR}
           alt=""
         />
         <div className="flex flex-grow flex-col justify-center gap-1 py-1">
           <p className="max-w-[240px] flex-grow overflow-hidden text-ellipsis whitespace-nowrap">
             {conversation.nameMember.find(__ => __ !== currentUser?.ten)}
           </p>
+          <p className="max-w-[240px] flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-600">
+            {lastMessage?.message}
+          </p>
         </div>
+        <div>
+          {conversation?.seen && !conversation?.seen.includes("" + currentUser?.id) ? (
+            <i className='bx bxs-bullseye'></i>
+          ) : ""}
+      </div>
       </Link>
     );
   }
@@ -44,12 +58,14 @@ const SelectConversation: FC<SelectConversationProps> = ({
   return (
     <Link
       to={`/${conversationId}`}
-      className={`hover:bg-dark-lighten relative flex items-stretch gap-2 py-2 px-5 transition duration-300 ${
-        conversationId === id ? "!bg-[#263342]" : ""
+      className={`hover:bg-stone-400 relative flex items-stretch gap-2 py-2 px-5 transition duration-300 ${
+        conversationId === id ? "bg-stone-500" : ""
+      } ${
+        conversation?.seen && !conversation?.seen.includes("" + currentUser?.id) ? "bg-blue-500" : ""
       }`}
     >
       <img
-        className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+        className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
         src={conversation.avatarMember}
         alt=""
       />
@@ -57,6 +73,14 @@ const SelectConversation: FC<SelectConversationProps> = ({
         <p className="max-w-[240px] flex-grow overflow-hidden text-ellipsis whitespace-nowrap">
           {conversation.nameGroup}
         </p>
+        <p className="max-w-[240px] flex-grow overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-600">
+          {lastMessage?.message}
+        </p>
+      </div>
+      <div>
+        {conversation?.seen && !conversation?.seen.includes("" + currentUser?.id) ? (
+          <i className='bx bxs-bullseye'></i>
+        ) : ""}
       </div>
     </Link>
   );

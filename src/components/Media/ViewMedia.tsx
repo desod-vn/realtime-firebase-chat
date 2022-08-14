@@ -1,6 +1,5 @@
 import { FC, useState } from "react";
 
-import Files from "./Files";
 import Image from "./Image";
 
 interface ViewMediaProps {
@@ -27,7 +26,7 @@ const ViewMedia: FC<ViewMediaProps> = ({ setIsOpened }) => {
           <div className="flex-1"></div>
           <div className="flex flex-1 items-center justify-center">
             <h1 className="whitespace-nowrap text-center text-2xl">
-              View images and files
+              Xem ảnh
             </h1>
           </div>
           <div className="flex flex-1 items-center justify-end">
@@ -47,22 +46,12 @@ const ViewMedia: FC<ViewMediaProps> = ({ setIsOpened }) => {
               selectedSection === Sections.images ? "bg-dark-lighten" : ""
             }`}
           >
-            Images
-          </button>
-          <button
-            onClick={() => setSelectedSection(Sections.files)}
-            className={`flex-1 py-2 text-center ${
-              selectedSection === Sections.files ? "bg-dark-lighten" : ""
-            }`}
-          >
-            Files
+            Hình ảnh
           </button>
         </div>
 
         {selectedSection === Sections.images ? (
           <Image />
-        ) : selectedSection === Sections.files ? (
-          <Files />
         ) : (
           <></>
         )}

@@ -127,7 +127,7 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-dark mx-3 w-full max-w-[500px] overflow-hidden rounded-lg"
+        className="bg-neutral-300 mx-3 w-full max-w-[500px] overflow-hidden rounded-lg"
       >
         <div className="border-dark-lighten flex items-center justify-between border-b py-3 px-3">
           <div className="flex-1"></div>
@@ -155,7 +155,7 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
           />
         </div>
         <div>
-          <div className="mx-5 bg-neutral-700 p-2 h-40 overflow-y-auto">
+          <div className="mx-5 bg-neutral-400 p-2 h-40 overflow-y-auto">
             {
               selected.map(__ => {
                 const findUser = users?.data.find((user : any) => user?.idNguoiDung == __);
@@ -184,7 +184,7 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
                 <div
                   key={index}
                   onClick={() => handleToggle(__?.idNguoiDung)}
-                  className="hover:bg-dark-lighten flex cursor-pointer items-center gap-2 px-5 py-2 transition"
+                  className="hover:bg-stone-400 flex cursor-pointer items-center gap-2 px-5 py-2 transition"
                 >
                   <input
                     className="flex-shrink-0 cursor-pointer"
@@ -232,7 +232,7 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
               <button
                 disabled={selected.length === 0 || (selected.length > 1 && !name) || (selected.length > 1 && !image)}
                 onClick={handleCreateConversation}
-                className="bg-dark-lighten rounded-lg py-2 px-3 transition duration-300 hover:brightness-125 disabled:!brightness-[80%]"
+                className="bg-green-300 rounded-lg py-2 px-3 transition duration-300 hover:brightness-125 disabled:!brightness-[80%]"
               >
                 Tạo cuộc trò chuyện
               </button>

@@ -1,8 +1,7 @@
 import { DEFAULT_AVATAR, IMAGE_PROXY } from "../../shared/constants";
 
-import { FC } from "react";
-import Skeleton from "../Skeleton";
-import { useUsersInfo } from "../../hooks/useUsersInfo";
+import { FC, useEffect, useState } from "react";
+import { useStore } from "../../store";
 
 interface AvatarFromIdProps {
   uid: string;
@@ -10,32 +9,41 @@ interface AvatarFromIdProps {
 }
 
 const AvatarFromId: FC<AvatarFromIdProps> = ({ uid, size = 30 }) => {
-  const { data, loading, error } = useUsersInfo([uid]);
 
-  if (loading)
-    return (
-      <Skeleton
-        className="rounded-full"
-        style={{ width: size, height: size }}
-      ></Skeleton>
-    );
+  const [avatar, setAvatar] = useState('');
+  const currentUser = useStore((state) => state.currentUser);
 
-  if (error)
-    return (
-      <img
-        src={DEFAULT_AVATAR}
-        className="rounded-full"
-        style={{ width: size, height: size }}
-      />
-    );
+  useEffect(() => {
+    fetch('http://103.176.179.201:8013/api/User/get-by-id?id=' + uid, 
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + currentUser?.token
+      },
+      
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        setAvatar(data.data);
+      }
+    })
+    .catch((error) => console.log(error));
+  }, []);
+  
 
   return (
     <img
-      title={data?.[0].data()?.displayName}
+      title={avatar?.ten}
       style={{ width: size, height: size }}
       className="rounded-full object-cover"
-      src={IMAGE_PROXY(data?.[0].data()?.photoURL)}
-    ></img>
+      src={
+        !!avatar?.nguoiDung_AnhDinhKem && avatar?.nguoiDung_AnhDinhKem.length && avatar?.nguoiDung_AnhDinhKem[0].url
+        ? IMAGE_PROXY(avatar?.nguoiDung_AnhDinhKem[0].url)
+        : DEFAULT_AVATAR
+      }
+    />
   );
 };
 

@@ -24,6 +24,7 @@ export interface MessageItem {
   content: string;
   idRoom: string;
   nameFile?: string;
+  reactions: string[];
   timeStamp: {
     seconds: number;
     nanoseconds: number;

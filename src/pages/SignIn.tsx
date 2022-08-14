@@ -39,6 +39,7 @@ const SignIn: FC = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
+          localStorage.setItem('user', JSON.stringify(data.data));
           return setCurrentUser(data.data);
         } else {
           setError(data.message);
@@ -57,8 +58,7 @@ const SignIn: FC = () => {
         <div className="w-full max-w-[1100px]">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
-              <img className="h-8 w-8" src="/icon.svg" alt="" />
-              <span className="text-2xl">FireVerse</span>
+              <img className="w-40" src="/logo.png" alt="" />
             </div>
           </div>
 
@@ -68,14 +68,6 @@ const SignIn: FC = () => {
             </div>
 
             <div className="mt-12 flex flex-1 flex-col items-center gap-4 md:items-start lg:mt-24">
-              <h1 className="text-center text-3xl md:text-left md:text-4xl">
-                The best place for messaging
-              </h1>
-              <p className="text-center text-xl md:text-left md:text-2xl mb-5">
-                It's free, fast and secure. We make it easy and fun to stay
-                close to your favourite people.
-              </p>
-
               <input
                 type="text"
                 value={username}
@@ -95,7 +87,7 @@ const SignIn: FC = () => {
                 onClick={handleSignIn}
                 className="flex px-10 cursor-pointer items-center gap-3 rounded-md bg-blue-300 p-3 text-black transition duration-300 hover:brightness-90 disabled:!cursor-default disabled:!brightness-75"
               >
-                <span>Sign In</span>
+                <span>Đăng nhập</span>
               </button>
             </div>
           </div>

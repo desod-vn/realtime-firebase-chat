@@ -51,6 +51,17 @@ const ChatView: FC<ChatViewProps> = ({
     )
   );
 
+  const updateTimestamp = () => {
+    if (!!conversation?.seen && !conversation?.seen.includes("" + currentUser?.id)) {
+      updateDoc(
+        doc(db, "room", conversationId as string),
+        {
+          seen: ["" + currentUser?.id, ...conversation?.seen],
+        });
+    }
+  };
+  updateTimestamp();
+
   const dataRef = useRef(data);
   const conversationIdRef = useRef(conversationId);
 

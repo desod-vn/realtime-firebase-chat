@@ -21,15 +21,13 @@ const ReactionPopup: FC<ReactionPopupProps> = ({
   messageId,
   currentReaction,
 }) => {
-  const { id: conversationId } = useParams();
-
   const currentUser = useStore((state) => state.currentUser);
 
   const updateReaction = (value: number) => {
     updateDoc(
-      doc(db, "conversations", conversationId as string, "messages", messageId),
+      doc(db, "message", messageId),
       {
-        [`reactions.${currentUser?.uid}`]: value,
+        [`reactions.${currentUser?.id}`]: value,
       }
     );
   };
