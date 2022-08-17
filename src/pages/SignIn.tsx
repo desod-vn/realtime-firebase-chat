@@ -1,11 +1,4 @@
-import {
-  AuthProvider,
-  FacebookAuthProvider,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
 import { FC, useState } from "react";
-
 import Alert from "../components/Alert";
 import { Navigate } from "react-router-dom";
 import { useQueryParams } from "../hooks/useQueryParams";

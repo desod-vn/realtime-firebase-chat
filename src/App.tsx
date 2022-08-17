@@ -1,19 +1,28 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import { auth, db } from "./shared/firebase";
-import { doc, setDoc } from "firebase/firestore";
-
 import BarWave from "react-cssfx-loading/src/BarWave";
 import Chat from "./pages/Chat";
 import Home from "./pages/Home";
 import PrivateRoute from "./components/PrivateRoute";
 import SignIn from "./pages/SignIn";
-import { onAuthStateChanged } from "firebase/auth";
 import { useStore } from "./store";
+import { getTokenWeb, onMessageListener } from './shared/firebase'
+import Alert from "./components/Alert";
 
 const App: FC = () => {
   const currentUser = useStore((state) => state.currentUser);
   const setCurrentUser = useStore((state) => state.setCurrentUser);
+  const [notification, setNotification] = useState({title: '', body: ''})
+  const [isAlertOpened, setIsAlertOpened] = useState(false);
+
+  getTokenWeb();
+
+  onMessageListener()
+  .then((payload) => {
+    setIsAlertOpened(true);
+    setNotification({title: payload?.notification?.title, body: payload?.notification?.body});     
+  })
+  .catch((err) => console.log('failed: ', err));
 
   useEffect(() => {
     const user = localStorage.getItem('user') || null;
@@ -31,25 +40,33 @@ const App: FC = () => {
     );
 
   return (
-    <Routes>
-      <Route
-        index
-        element={
-          <PrivateRoute>
-            <Home />
-          </PrivateRoute>
-        }
+    <>
+      <Routes>
+        <Route
+          index
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
+        <Route path="sign-in" element={<SignIn />} />
+        <Route
+          path=":id"
+          element={
+            <PrivateRoute>
+              <Chat />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+      <Alert
+        isOpened={isAlertOpened}
+        setIsOpened={setIsAlertOpened}
+        text={notification.body}
+        title={notification.title}
       />
-      <Route path="sign-in" element={<SignIn />} />
-      <Route
-        path=":id"
-        element={
-          <PrivateRoute>
-            <Chat />
-          </PrivateRoute>
-        }
-      />
-    </Routes>
+    </>
   );
 };
 

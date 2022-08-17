@@ -4,11 +4,15 @@ import {
   formatDate,
   splitLinkFromMessage,
 } from "../../shared/utils";
-import ReactionStatus from "../Chat/ReactionStatus";
+
+import ClickAwayListener from "../ClickAwayListener";
 import { EMOJI_REGEX } from "../../shared/constants";
-import FileIcon from "../FileIcon";
 import ImageView from "../ImageView";
 import { MessageItem } from "../../shared/types";
+import ReactionPopup from "../Chat/ReactionPopup";
+import ReactionStatus from "../Chat/ReactionStatus";
+import ReplyBadge from "../Chat/ReplyBadge";
+import ReplyIcon from "../Icon/ReplyIcon";
 import SpriteRenderer from "../SpriteRenderer";
 import { db } from "../../shared/firebase";
 
@@ -19,6 +23,7 @@ interface RightMessageProps {
 }
 
 const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
+  const [isSelectReactionOpened, setIsSelectReactionOpened] = useState(false);
   const [isImageViewOpened, setIsImageViewOpened] = useState(false);
   const removeMessage = (messageId: string) => {
     updateDoc(
@@ -26,10 +31,10 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
       {
         typeMessage: "removed",
         content: "",
+        reactions: [],
       }
     );
   };
-
 
   const formattedDate = formatDate(
     message.timeStamp?.seconds ? message.timeStamp?.seconds * 1000 : Date.now()
@@ -37,13 +42,20 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
 
   return (
     <div id={`message-${message.id}`}>
+      <div className="-mb-2 flex justify-end px-8">
+        {!!message?.replyTo && (
+          <ReplyBadge messageId={message?.replyTo as string} />
+        )}
+      </div>
       <div
         onClick={(e) => {
           if (e.detail === 2 && message.typeMessage !== "removed") {
             setReplyInfo(message);
           }
         }}
-        className={`group relative flex flex-row-reverse items-stretch gap-2 px-8`}
+        className={`group relative flex flex-row-reverse items-stretch gap-2 px-8 ${
+          Object.keys(message.reactions || {}).length > 0 ? "mb-2" : ""
+        }`}
       >
         {message.typeMessage === "text" ? (
           <>
@@ -98,32 +110,6 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
               setIsOpened={setIsImageViewOpened}
             />
           </>
-        ) : message.typeMessage === "file" ? (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            title={formattedDate}
-            className="bg-dark-lighten flex items-center gap-2 overflow-hidden rounded-lg py-3 px-5"
-          >
-            <FileIcon
-              className="h-4 w-4 object-cover"
-              extension={message.nameFile?.split(".").slice(-1)[0] as string}
-            />
-            <div>
-              <p className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap">
-                {message.nameFile}
-              </p>
-
-            </div>
-
-            <a
-              href={message.content}
-              download
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="bx bxs-download text-2xl"></i>
-            </a>
-          </div>
         ) : message.typeMessage === "sticker" ? (
           <SpriteRenderer
             onClick={(e) => e.stopPropagation()}
@@ -144,6 +130,23 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
         {message.typeMessage !== "removed" && (
           <>
             <button
+              onClick={() => setIsSelectReactionOpened(true)}
+              className="text-lg text-gray-500 opacity-0 transition hover:text-gray-300 group-hover:opacity-100"
+            >
+              <i className="bx bx-smile"></i>
+            </button>
+
+            <button
+              onClick={(e) => {
+                setReplyInfo(message);
+                e.stopPropagation();
+              }}
+              className="text-gray-500 opacity-0 transition hover:text-gray-300 group-hover:opacity-100"
+            >
+              <ReplyIcon />
+            </button>
+
+            <button
               onClick={(e) => {
                 removeMessage(message.id as string);
                 e.stopPropagation();
@@ -152,13 +155,32 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
             >
               <i className="bx bxs-trash"></i>
             </button>
+
+            {isSelectReactionOpened && (
+              <ClickAwayListener
+                onClickAway={() => setIsSelectReactionOpened(false)}
+              >
+                {(ref) => (
+                  <ReactionPopup
+                    position="right"
+                    forwardedRef={ref}
+                    setIsOpened={setIsSelectReactionOpened}
+                    messageId={message.id as string}
+                    currentReaction={
+                      message.reactions?.[currentUser?.id as string] || 0
+                    }
+                  />
+                )}
+              </ClickAwayListener>
+            )}
+
+            {Object.keys(message.reactions || {}).length > 0 && (
+              <ReactionStatus
+                message={message}
+                position="right"
+              />
+            )}
           </>
-        )}
-        {Object.keys(message.reactions || {}).length > 0 && (
-          <ReactionStatus
-            message={message}
-            position="right"
-          />
         )}
       </div>
     </div>

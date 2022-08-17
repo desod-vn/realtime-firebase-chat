@@ -1,13 +1,12 @@
 import { DEFAULT_AVATAR, IMAGE_PROXY } from "../../shared/constants";
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { collection, orderBy, query, where } from "firebase/firestore";
+import { collection, orderBy, query, where, updateDoc, doc } from "firebase/firestore";
 import ClickAwayListener from "../ClickAwayListener";
 import { ConversationInfo } from "../../shared/types";
 import CreateConversation from "./CreateConversation";
 import SelectConversation from "./SelectConversation";
 import Spin from "react-cssfx-loading/src/Spin";
-import { auth } from "../../shared/firebase";
 import { db } from "../../shared/firebase";
 import { useCollectionQuery } from "../../hooks/useCollectionQuery";
 import { useStore } from "../../store";
@@ -27,7 +26,27 @@ const SideBar: FC = () => {
       orderBy("timeStamp", "desc")
     )
   );
-  
+
+  const handlePing = () => {
+    const pingUser = localStorage.getItem('pingToken') || null;
+    if (!!pingUser) {
+      data?.docs.map(item => {
+        if(!Array.isArray(item.data()?.userPing)){
+          updateDoc(doc(db, "room", item.id), {
+            "userPing": [pingUser],
+          });
+        }
+        if (Array.isArray(item.data()?.userPing) && !item.data().userPing.includes(pingUser)) {
+          updateDoc(doc(db, "room", item.id), {
+            "userPing": [...item.data()?.userPing, pingUser],
+          });
+        }
+      })
+    }
+  }
+
+  handlePing()
+
   const signOut = () => {
     localStorage.clear();
     window.location.reload();

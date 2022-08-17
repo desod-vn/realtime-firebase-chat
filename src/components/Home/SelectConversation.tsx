@@ -17,9 +17,7 @@ const SelectConversation: FC<SelectConversationProps> = ({
   const currentUser = useStore((state) => state.currentUser);
   const { id } = useParams();
 
-  const {
-    data: lastMessage,
-  } = useLastMessage(conversationId);
+  const {data: lastMessage} = useLastMessage(conversationId);
 
   if (conversation.nameMember.length === 2) {
     // const avatarUrl = conversation.avatarMember.slice(conversation.avatarMember.indexOf('http'), conversation.avatarMember.indexOf(', loai'))

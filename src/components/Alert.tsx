@@ -4,6 +4,7 @@ interface AlertProps {
   isOpened: boolean;
   setIsOpened: (value: boolean) => void;
   text: string;
+  title?: string;
   isError?: boolean;
   duration?: number;
 }
@@ -12,6 +13,7 @@ const Alert: FC<AlertProps> = ({
   isOpened,
   setIsOpened,
   text,
+  title = '',
   isError = false,
   duration = 5000,
 }) => {
@@ -33,6 +35,7 @@ const Alert: FC<AlertProps> = ({
           : "invisible scale-50 opacity-0"
       }`}
     >
+      <h1 className="text-lg font-bold">{title}</h1>
       {text}
     </div>
   );

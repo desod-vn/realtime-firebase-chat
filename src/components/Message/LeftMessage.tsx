@@ -11,6 +11,8 @@ import { EMOJI_REGEX } from "../../shared/constants";
 import ImageView from "../ImageView";
 import ReactionPopup from "../Chat/ReactionPopup";
 import ReactionStatus from "../Chat/ReactionStatus";
+import ReplyBadge from "../Chat/ReplyBadge";
+import ReplyIcon from "../Icon/ReplyIcon";
 import SpriteRenderer from "../SpriteRenderer";
 import { useStore } from "../../store";
 
@@ -42,6 +44,20 @@ const LeftMessage: FC<LeftMessageProps> = ({
   return (
     <div id={`message-${message.id}`}>
       <div
+        className={`${
+          conversation.idMember.length === 2 ? "px-8" : "px-[70px]"
+        } -mb-2 flex`}
+      >
+        {!!message?.replyTo && (
+          <ReplyBadge messageId={message?.replyTo as string} />
+        )}
+      </div>
+      <div
+        onClick={(e) => {
+          if (e.detail === 2 && message.typeMessage !== "removed") {
+            setReplyInfo(message);
+          }
+        }}
         className={`group relative flex items-stretch gap-2 px-8 ${
           Object.keys(message?.reactions || {}).length > 0 ? "mb-2" : ""
         }`}
@@ -138,6 +154,15 @@ const LeftMessage: FC<LeftMessageProps> = ({
             >
               <i className="bx bx-smile"></i>
             </button>
+            <button
+              onClick={(e) => {
+                setReplyInfo(message);
+                e.stopPropagation();
+              }}
+              className="text-gray-500 opacity-0 transition hover:text-gray-300 group-hover:opacity-100"
+            >
+              <ReplyIcon />
+            </button>
 
             {isSelectReactionOpened && (
               <ClickAwayListener
@@ -150,7 +175,7 @@ const LeftMessage: FC<LeftMessageProps> = ({
                     setIsOpened={setIsSelectReactionOpened}
                     messageId={message.id as string}
                     currentReaction={
-                      message?.reactions?.[currentUser?.uid as string] || 0
+                      message?.reactions?.[currentUser?.id as string] || 0
                     }
                   />
                 )}

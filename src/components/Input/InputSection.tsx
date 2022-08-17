@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "../../shared/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { ConversationInfo } from "../shared/types";
 
 import Alert from "../Alert";
 import ClickAwayListener from "../ClickAwayListener";
@@ -36,6 +37,7 @@ interface InputSectionProps {
   setInputSectionOffset?: (value: number) => void;
   replyInfo?: any;
   setReplyInfo?: (value: any) => void;
+  conversation: ConversationInfo
 }
 
 const InputSection: FC<InputSectionProps> = ({
@@ -43,6 +45,7 @@ const InputSection: FC<InputSectionProps> = ({
   setInputSectionOffset,
   replyInfo,
   setReplyInfo,
+  conversation
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [fileUploading, setFileUploading] = useState(false);
@@ -56,6 +59,30 @@ const InputSection: FC<InputSectionProps> = ({
   const textInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [fileDragging, setFileDragging] = useState(false);
+
+  const handlePushNotify = (noti: string, to: string) => {
+    const pingUser = localStorage.getItem('pingToken') || null;
+
+    if (to != pingUser) {
+      fetch('https://fcm.googleapis.com/fcm/send',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'key=AAAAhX6S7fI:APA91bG49ME9K85FNYrwp3hk6s4EO_39ZFcQxkTdkAbIDEGIl20CpSH3LdZNovoshckni9PX6en28H3Z4TALn21K4wFGkw7qcGQdH6uvF6zGacTPt4cevWJyCriav4g7r-0jcAmHl2Uk'
+          },
+          body: JSON.stringify({
+            "notification": {
+              "title": "Tin nhắn đến",
+              "body" : noti,
+              "text": conversationId
+            },
+            "to": to
+          })
+        })
+        .catch((error) => console.log(error));
+    }
+  };
 
   const updateTimestamp = () => {
     updateDoc(
@@ -125,6 +152,9 @@ const InputSection: FC<InputSectionProps> = ({
     );
 
     updateTimestamp();
+    if(!!conversation?.userPing.length) {
+      conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item))
+    }
   };
 
   const sendSticker = (url: string) => {

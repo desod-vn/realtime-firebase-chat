@@ -59,6 +59,7 @@ const Chat: FC = () => {
               setInputSectionOffset={setInputSectionOffset}
               replyInfo={replyInfo}
               setReplyInfo={setReplyInfo}
+              conversation={conversation} 
               disabled={false}
             />
           </>
