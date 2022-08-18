@@ -18,11 +18,11 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "../../shared/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { ConversationInfo } from "../shared/types";
-
+import { ConversationInfo } from "../../shared/types";
 import Alert from "../Alert";
 import ClickAwayListener from "../ClickAwayListener";
 import { EMOJI_REPLACEMENT } from "../../shared/constants";
+import ReplyIcon from "../Icon/ReplyIcon";
 import Spin from "react-cssfx-loading/src/Spin";
 import StickerIcon from "../Icon/StickerIcon";
 import StickerPicker from "./StickerPicker";
@@ -90,7 +90,7 @@ const InputSection: FC<InputSectionProps> = ({
       {
         seen: ["" + currentUser?.id],
         timeStamp: serverTimestamp(),
-      });
+    });
   };
 
   useEffect(() => {
@@ -137,7 +137,6 @@ const InputSection: FC<InputSectionProps> = ({
       });
     });
 
-    setReplyInfo && setReplyInfo(null);
 
     const s = await addDoc(
       collection(db, "message"),
@@ -147,9 +146,12 @@ const InputSection: FC<InputSectionProps> = ({
         content: replacedInputValue.trim(),
         typeMessage: "text",
         timeStamp: serverTimestamp(),
-        nameFile: null
+        nameFile: null,
+        replyTo: replyInfo?.id || null,
       }
     );
+
+    setReplyInfo && setReplyInfo(null);
 
     updateTimestamp();
     if(!!conversation?.userPing.length) {
@@ -345,6 +347,34 @@ const InputSection: FC<InputSectionProps> = ({
               </button>
             </div>
           ))}
+        </div>
+      )}
+      {previewFiles.length === 0 && !!replyInfo && (
+        <div className="border-dark-lighten flex h-[76px] justify-between border-t p-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <ReplyIcon />
+              <p>
+                Trả lời tin nhắn
+                {currentUser?.id === replyInfo.author ? " của chính bạn" : ""}
+              </p>
+            </div>
+            {replyInfo.typeMessage === "text" ? (
+              <p className="max-w-[calc(100vw-65px)] overflow-hidden text-ellipsis whitespace-nowrap md:max-w-[calc(100vw-420px)]">
+                {replyInfo.content}
+              </p>
+            ) : replyInfo.typeMessage === "image" ? (
+              "Hình ảnh"
+            ) : replyInfo.typeMessage === "sticker" ? (
+              "Sticker"
+            ) : (
+              "Tin nhắn đã được thu hồi"
+            )}
+          </div>
+
+          <button onClick={() => setReplyInfo && setReplyInfo(null)}>
+            <i className="bx bx-x text-3xl"></i>
+          </button>
         </div>
       )}
       <div

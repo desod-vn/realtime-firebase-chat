@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-
+import { DEFAULT_AVATAR, IMAGE_PROXY } from "../../shared/constants";
 import { ConversationInfo } from "../../shared/types";
 import ConversationSettings from "./ConversationSettings";
 import { Link } from "react-router-dom";
@@ -14,12 +14,14 @@ const ChatHeader: FC<ChatHeaderProps> = ({ conversation }) => {
   const currentUser = useStore((state) => state.currentUser);
 
   const [isConversationSettingsOpened, setIsConversationSettingsOpened] = useState(false);
-  const [isGroupMembersOpened, setIsGroupMembersOpened] = useState(false);
   const [isViewMediaOpened, setIsViewMediaOpened] = useState(false);
 
-  // const avatarUrl = conversation.avatarMember.slice(conversation.avatarMember.indexOf('http'), conversation.avatarMember.indexOf(', loai'))
-  const avatarUrl = ''
-
+  const avatarUrl = () => {
+    if (conversation.avatarMember.indexOf('http') == 0) {
+      return IMAGE_PROXY(conversation.avatarMember.slice(conversation.avatarMember.indexOf('http'), conversation.avatarMember.indexOf(', loai')))
+    }
+    return DEFAULT_AVATAR
+  }
   return (
     <>
       <div className="border-dark-lighten flex h-20 items-center justify-between border-b px-5">
@@ -30,7 +32,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ conversation }) => {
           {conversation.idMember.length === 2 ? (
             <img
               className="h-10 w-10 rounded-full"
-              src={avatarUrl}
+              src={avatarUrl()}
               alt=""
             />
           ) : (
@@ -47,7 +49,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({ conversation }) => {
               )}
             </>
           )}
-          <p>
+          <p className="font-bold">
             {conversation.idMember.length > 2 && conversation.nameGroup
               ? conversation.nameGroup
               : conversation.nameMember.find(__ => __ !== currentUser?.ten)}

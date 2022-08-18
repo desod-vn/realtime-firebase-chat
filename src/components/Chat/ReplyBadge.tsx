@@ -30,22 +30,20 @@ const ReplyBadge: FC<ReplyBadgeProps> = ({ messageId }) => {
         }}
         className="cursor-pointer rounded-lg bg-[#4E4F50] p-2 opacity-60"
       >
-        {data?.data()?.type === "text" ? (
+        {data?.data()?.typeMessage === "text" ? (
           <p>{data?.data()?.content}</p>
-        ) : data?.data()?.type === "image" ? (
-          "An image"
-        ) : data?.data()?.type === "file" ? (
-          "A file"
-        ) : data?.data()?.type === "sticker" ? (
-          "A sticker"
+        ) : data?.data()?.typeMessage === "image" ? (
+          "Hình ảnh"
+        ) : data?.data()?.tytypeMessagepe === "sticker" ? (
+          "Sticker"
         ) : (
-          "Message has been removed"
+          "Tin nhắn đã được thu hồi"
         )}
       </div>
       <Alert
         isOpened={isAlertOpened}
         setIsOpened={setIsAlertOpened}
-        text="Cannot find your message. Try to scroll up to load more"
+        text="Không thể tìm thấy tin nhắn. Vui lòng kéo lên để kiểm tra"
       />
     </>
   );

@@ -37,14 +37,13 @@ const Chat: FC = () => {
           <>
             <div className="border-dark-lighten h-20 border-b"></div>
             <div className="flex-grow"></div>
-            <InputSection disabled />
           </>
         ) : !conversation ||
           error ||
           !conversation.idMember.includes(currentUser?.id.toString()) ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-6">
             <img className="h-32 w-32 object-cover" src="/error.svg" alt="" />
-            <p className="text-center text-lg">Conversation does not exists</p>
+            <p className="text-center text-lg">Không tìm thấy cuộc trò chuyện</p>
           </div>
         ) : (
           <>
@@ -55,6 +54,7 @@ const Chat: FC = () => {
               inputSectionOffset={inputSectionOffset}
               conversation={conversation}
             />
+            <div style={{visibility: 'hidden', height: '160px'}}></div>
             <InputSection
               setInputSectionOffset={setInputSectionOffset}
               replyInfo={replyInfo}

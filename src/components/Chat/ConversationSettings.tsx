@@ -86,6 +86,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
       "idMember": sortedUser.map((__ : any) => "" + __.id),
       "nameMember": sortedUser.map((__ : any) => __.name),
       "listAvatarMember": sortedUser.map((__ : any) => __.avatar),
+      "pingUser": []
     });
   };
 
@@ -120,10 +121,13 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
   };
 
   const leaveGroup = () => {
+    const pingUser = localStorage.getItem('pingToken') || null;
+
     updateDoc(doc(db, "room", conversationId as string), {
       "idMember": conversation?.idMember.filter((__ : any) => __ != "" + currentUser?.id),
       "nameMember": conversation?.idMember.filter((__ : any) => __ != currentUser?.ten),
       "listAvatarMember": conversation?.idMember.filter((__ : any) => __ != currentUser?.nguoiDung_AnhDinhKem[0].url),
+      "pingUser": !!pingUser ? conversation?.pingUser.filter((__ : any) => __ != pingUser) : conversation?.pingUser,
     });
     navigate("/");
   };

@@ -10,7 +10,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-import AvatarFromId from "./AvatarFromId";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LeftMessage from "../Message/LeftMessage";
 import RightMessage from "../Message/RightMessage";
@@ -83,7 +82,7 @@ const ChatView: FC<ChatViewProps> = ({
   if (error)
     return (
       <div className="flex-grow">
-        <p className="mt-4 text-center text-gray-400">Something went wrong</p>
+        <p className="mt-4 text-center text-gray-400">Có lỗi xảy ra</p>
       </div>
     );
 
@@ -91,7 +90,7 @@ const ChatView: FC<ChatViewProps> = ({
     return (
       <div className="flex-grow">
         <p className="mt-4 text-center text-gray-400">
-          No message recently. Start chatting now.
+          Không thấy cuộc trò chuyện nào.
         </p>
       </div>
     );
@@ -107,8 +106,8 @@ const ChatView: FC<ChatViewProps> = ({
           <Spin />
         </div>
       }
-      style={{ display: "flex", flexDirection: "column-reverse" }}
-      height={`calc(100vh - ${144 + inputSectionOffset}px)`}
+      style={{ display: "flex", flexDirection: "column-reverse", overflow: 'auto'}}
+      height={`calc(100vh - ${300 + inputSectionOffset}px)`}
     >
       <div className="flex flex-col items-stretch gap-3 pt-10 pb-1">
         {data?.docs
