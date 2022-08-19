@@ -20,7 +20,6 @@ const SelectConversation: FC<SelectConversationProps> = ({
   const {data: lastMessage} = useLastMessage(conversationId);
 
   if (conversation.nameMember.length === 2) {
-    // const avatarUrl = conversation.avatarMember.slice(conversation.avatarMember.indexOf('http'), conversation.avatarMember.indexOf(', loai'))
     const avatarUrl = ''
     return (
       <Link

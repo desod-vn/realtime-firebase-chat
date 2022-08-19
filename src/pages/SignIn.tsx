@@ -3,6 +3,7 @@ import Alert from "../components/Alert";
 import { Navigate } from "react-router-dom";
 import { useQueryParams } from "../hooks/useQueryParams";
 import { useStore } from "../store";
+import { BACKEND_API } from "../shared/configs";
 
 const SignIn: FC = () => {
   const { redirect } = useQueryParams();
@@ -18,7 +19,7 @@ const SignIn: FC = () => {
 
   const handleSignIn = () => {
     setLoading(true);
-    fetch('http://103.176.179.201:8013/api/User/authenticate',
+    fetch(BACKEND_API + '/User/authenticate',
       {
         method: 'POST',
         headers: {
@@ -33,6 +34,10 @@ const SignIn: FC = () => {
       .then((data) => {
         if (data.success) {
           localStorage.setItem('user', JSON.stringify(data.data));
+          var current = new Date();
+          var followingDay = new Date(current.getTime() + 86400000);
+          localStorage.setItem('expired', JSON.stringify(followingDay.getTime()));
+
           return setCurrentUser(data.data);
         } else {
           setError(data.message);

@@ -17,6 +17,14 @@ const App: FC = () => {
 
   getTokenWeb();
 
+  useEffect(() => {
+    const expired = localStorage.getItem('expired') || '0';
+    const current = new Date();
+    if (current.getTime() > parseInt(expired)) {
+      localStorage.clear();
+    }
+  }, [])
+
   onMessageListener()
   .then((payload) => {
     setIsAlertOpened(true);

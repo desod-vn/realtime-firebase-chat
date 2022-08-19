@@ -8,6 +8,7 @@ import { DEFAULT_AVATAR } from "../../shared/constants";
 import { ConversationInfo } from "../../shared/types";
 import { formatFileName } from "../../shared/utils";
 import { useStore } from "../../store";
+import { BACKEND_API } from "../../shared/configs";
 
 interface ConversationConfigProps {
   conversation: ConversationInfo;
@@ -43,7 +44,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
   };
 
   useEffect(() => {
-    fetch('http://103.176.179.201:8013/api/NhanVien/GetAllNguoiDung?PageSize=100000&PageIndex=1', 
+    fetch(BACKEND_API + '/NhanVien/GetAllNguoiDung?PageSize=100000&PageIndex=1', 
     {
       method: 'GET',
       headers: {

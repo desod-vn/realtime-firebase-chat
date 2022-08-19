@@ -3,7 +3,6 @@ import { doc, updateDoc } from "firebase/firestore";
 
 import { REACTIONS_UI } from "../../shared/constants";
 import { db } from "../../shared/firebase";
-import { useParams } from "react-router-dom";
 import { useStore } from "../../store";
 
 interface ReactionPopupProps {

@@ -1,7 +1,7 @@
 import { DEFAULT_AVATAR, IMAGE_PROXY } from "../../shared/constants";
-
 import { FC, useEffect, useState } from "react";
 import { useStore } from "../../store";
+import { BACKEND_API } from "../../shared/configs";
 
 interface AvatarFromIdProps {
   uid: string;
@@ -14,7 +14,7 @@ const AvatarFromId: FC<AvatarFromIdProps> = ({ uid, size = 30 }) => {
   const currentUser = useStore((state) => state.currentUser);
 
   useEffect(() => {
-    fetch('http://103.176.179.201:8013/api/User/get-by-id?id=' + uid, 
+    fetch(BACKEND_API + '/User/get-by-id?id=' + uid, 
     {
       method: 'GET',
       headers: {

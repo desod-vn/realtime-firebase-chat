@@ -16,7 +16,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { db, storage } from "../../shared/firebase";
+import { db, storage, handlePushNotify } from "../../shared/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { ConversationInfo } from "../../shared/types";
 import Alert from "../Alert";
@@ -36,7 +36,9 @@ interface InputSectionProps {
   disabled: boolean;
   setInputSectionOffset?: (value: number) => void;
   replyInfo?: any;
+  tagUser?: any;
   setReplyInfo?: (value: any) => void;
+  setTagShow?: (value: any) => void;
   conversation: ConversationInfo
 }
 
@@ -44,7 +46,9 @@ const InputSection: FC<InputSectionProps> = ({
   disabled,
   setInputSectionOffset,
   replyInfo,
+  tagUser,
   setReplyInfo,
+  setTagShow,
   conversation
 }) => {
   const [inputValue, setInputValue] = useState("");
@@ -60,30 +64,7 @@ const InputSection: FC<InputSectionProps> = ({
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [fileDragging, setFileDragging] = useState(false);
 
-  const handlePushNotify = (noti: string, to: string) => {
-    const pingUser = localStorage.getItem('pingToken') || null;
-
-    if (to != pingUser) {
-      fetch('https://fcm.googleapis.com/fcm/send',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'key=AAAAhX6S7fI:APA91bG49ME9K85FNYrwp3hk6s4EO_39ZFcQxkTdkAbIDEGIl20CpSH3LdZNovoshckni9PX6en28H3Z4TALn21K4wFGkw7qcGQdH6uvF6zGacTPt4cevWJyCriav4g7r-0jcAmHl2Uk'
-          },
-          body: JSON.stringify({
-            "notification": {
-              "title": "Tin nhắn đến",
-              "body" : noti,
-              "text": conversationId
-            },
-            "to": to
-          })
-        })
-        .catch((error) => console.log(error));
-    }
-  };
-
+ 
   const updateTimestamp = () => {
     updateDoc(
       doc(db, "room", conversationId as string),
@@ -138,7 +119,7 @@ const InputSection: FC<InputSectionProps> = ({
     });
 
 
-    const s = await addDoc(
+    await addDoc(
       collection(db, "message"),
       {
         idRoom: conversationId,
@@ -154,8 +135,8 @@ const InputSection: FC<InputSectionProps> = ({
     setReplyInfo && setReplyInfo(null);
 
     updateTimestamp();
-    if(!!conversation?.userPing.length) {
-      conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item))
+    if(!!conversation.userPing && conversation.userPing.length) {
+      conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item, conversationId))
     }
   };
 
@@ -215,9 +196,7 @@ const InputSection: FC<InputSectionProps> = ({
 
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
-
     uploadFile(file);
   };
 
@@ -228,6 +207,14 @@ const InputSection: FC<InputSectionProps> = ({
     splitted.splice(start, end - start, value);
     setInputValue(splitted.join(""));
   };
+
+  useEffect(() => {
+    if (inputValue.lastIndexOf('@') > - 1 && (inputValue.lastIndexOf('@') == inputValue.length - 1)) {
+      setTagShow && setTagShow(true)
+    } else {
+      setTagShow && setTagShow(false)
+    }
+  }, [inputValue])
 
   const handleReplaceEmoji = (e: any) => {
     if (e.key === " ") {
@@ -255,6 +242,14 @@ const InputSection: FC<InputSectionProps> = ({
       });
     }
   };
+
+  useEffect(() => {
+    if (tagUser.length > 1) {
+      setInputValue(inputValue + tagUser.find((__ : string) => __ != '') + ' ')
+      setTagShow && setTagShow(false);
+    }
+    console.log(tagUser);
+  }, [tagUser])
 
   useEffect(() => {
     if (!setInputSectionOffset) return;

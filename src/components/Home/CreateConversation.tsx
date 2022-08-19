@@ -15,6 +15,7 @@ import { db, storage } from "../../shared/firebase";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../store";
 import { formatFileName } from "../../shared/utils";
+import { BACKEND_API } from "../../shared/configs";
 
 interface CreateConversationProps {
   setIsOpened: (value: boolean) => void;
@@ -22,7 +23,7 @@ interface CreateConversationProps {
 
 const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
   useEffect(() => {
-    fetch('http://103.176.179.201:8013/api/NhanVien/GetAllNguoiDung?PageSize=100000&PageIndex=1', 
+    fetch(BACKEND_API + '/NhanVien/GetAllNguoiDung?PageSize=100000&PageIndex=1', 
     {
       method: 'GET',
       headers: {

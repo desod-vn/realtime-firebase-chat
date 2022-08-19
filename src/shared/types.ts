@@ -7,15 +7,14 @@ export interface ConversationInfo {
   listAvatarmembers: string[];
   idMember: string[];
   nameMember: string[];
+  userPing?: string[];
 }
 
 
-export interface SavedUser {
-  uid: string;
+export interface User {
+  id: number;
   email: string | null;
-  displayName: string;
-  photoURL: string;
-  phoneNumber: string | null;
+  ten: string;
 }
 
 export interface MessageItem {
@@ -29,7 +28,7 @@ export interface MessageItem {
     seconds: number;
     nanoseconds: number;
   };
-  typeMessage: "text" | "image" | "file" | "sticker" | "removed";
+  typeMessage: "text" | "image" | "sticker" | "removed";
 }
 
 export interface StickerCollection {
