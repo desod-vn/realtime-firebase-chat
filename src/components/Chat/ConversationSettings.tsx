@@ -25,11 +25,11 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
   const currentUser = useStore((state) => state.currentUser);
   const navigate = useNavigate();
   const [isChangeChatNameOpened, setIsChangeChatNameOpened] = useState(false);
-  const [chatNameInputValue, setChatNameInputValue] = useState(conversation?.groupName || "");
+  const [chatNameInputValue, setChatNameInputValue] = useState(conversation?.nameGroup || "");
   const [isAddMemberOpened, setIsAddMemberOpened] = useState(false);
   const [isAlertOpened, setIsAlertOpened] = useState(false);
   const [alertText, setAlertText] = useState("");
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState(conversation?.idMember.map(__ => parseInt(__)));
   const [filter, setFilter] = useState('');
@@ -56,7 +56,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        setUsers(data.data);
+        setUsers(data.data.data);
       }
     })
     .catch((error) => console.log(error));
@@ -75,19 +75,19 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
     const sorted = [...selected, currentUser?.id].sort();
     const uniqueSort = new Set(sorted);
     const sortedUser = [...uniqueSort].map(__ => {
-      const findUser = users?.data.find((user : any) => user?.idNguoiDung == __)
-      return {
-        id: "" + findUser?.idNguoiDung,
-        name: findUser?.tenNguoiDung,
-        avatar: findUser?.strNguoiDungAnhDinhKem || null
-      }
+      const findUser = users?.find((user : any) => user?.idNguoiDung == __)
+        return {
+          id: "" + findUser?.idNguoiDung,
+          name: findUser?.tenNguoiDung,
+          avatar: findUser?.strNguoiDungAnhDinhKem || null
+        }
     })
     setIsOpened(false);
     updateDoc(doc(db, "room", conversationId as string), {
       "idMember": sortedUser.map((__ : any) => "" + __.id),
       "nameMember": sortedUser.map((__ : any) => __.name),
       "listAvatarMember": sortedUser.map((__ : any) => __.avatar),
-      "pingUser": []
+      "userPing": []
     });
   };
 
@@ -128,7 +128,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
       "idMember": conversation?.idMember.filter((__ : any) => __ != "" + currentUser?.id),
       "nameMember": conversation?.idMember.filter((__ : any) => __ != currentUser?.ten),
       "listAvatarMember": conversation?.idMember.filter((__ : any) => __ != currentUser?.nguoiDung_AnhDinhKem[0].url),
-      "pingUser": !!pingUser ? conversation?.pingUser.filter((__ : any) => __ != pingUser) : conversation?.pingUser,
+      "userPing": !!pingUser ? conversation?.userPing?.filter((__ : any) => __ != pingUser) : conversation.userPing,
     });
     navigate("/");
   };
@@ -223,7 +223,7 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
                   <div className="mx-5 bg-neutral-400 h-40 p-2 overflow-y-auto">
                     {
                       selected.map(__ => {
-                        const findUser = users?.data.find((user : any) => user?.idNguoiDung == __);
+                        const findUser = users.find((user : any) => user?.idNguoiDung == __);
                         return (<div className="flex items-center mb-2">
                           <img
                             className="h-8 w-8 flex-shrink-0 rounded-full object-cover mr-2"
@@ -236,9 +236,9 @@ const ConversationSettings: FC<ConversationConfigProps> = ({
                     }
                   </div>
                 <div className="flex h-72 w-full flex-col items-stretch gap-2 overflow-y-auto py-2">
-                  {users?.data && users?.data
-                    .filter((__ : object) => __.idNguoiDung !== currentUser?.id && __?.tenNguoiDung.toLowerCase().includes(filter.toLowerCase()))
-                    .map(((__: object, index : number) => (
+                  {users && users
+                    .filter((__ : any) => __.idNguoiDung !== currentUser?.id && __?.tenNguoiDung.toLowerCase().includes(filter.toLowerCase()))
+                    .map(((__: any, index : number) => (
                       <div
                         key={index}
                         onClick={() => handleToggle(__?.idNguoiDung)}

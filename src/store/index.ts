@@ -1,8 +1,8 @@
 import create from "zustand";
-
+import { UserInfo } from "../shared/types"
 interface StoreType {
-  currentUser: object | undefined | null;
-  setCurrentUser: (user: null | object) => void;
+  currentUser: UserInfo | any | undefined | null;
+  setCurrentUser: (user: UserInfo) => void;
 }
 
 

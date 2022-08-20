@@ -35,13 +35,13 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        setUsers(data.data);
+        setUsers(data.data.data);
       }
     })
     .catch((error) => console.log(error));
   }, []);
   
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any[]>([]);
   const currentUser = useStore((state) => state.currentUser);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -87,7 +87,7 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
 
     const sorted = [...selected, currentUser?.id].sort();
     const sortedUser = sorted.map(__ => {
-      const findUser = users?.data.find((user : any) => user?.idNguoiDung == __)
+      const findUser = users.find((user : any) => user?.idNguoiDung == __)
       return {
         id: "" + findUser?.idNguoiDung,
         name: findUser?.tenNguoiDung,
@@ -160,7 +160,7 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
           <div className="mx-5 bg-neutral-400 p-2 h-40 overflow-y-auto">
             {
               selected.map(__ => {
-                const findUser = users?.data.find((user : any) => user?.idNguoiDung == __);
+                const findUser = users.find((user : any) => user?.idNguoiDung == __);
                 return (<div className="flex items-center mb-2">
                   <img
                     className="h-8 w-8 flex-shrink-0 rounded-full object-cover mr-2"
@@ -180,9 +180,9 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
             </div>
           )}
           <div className="flex h-96 flex-col items-stretch gap-2 overflow-y-auto py-2">
-            {users?.data && users?.data
-              .filter((__ : object) => __.idNguoiDung !== currentUser?.id && __?.tenNguoiDung.toLowerCase().includes(filter.toLowerCase()))
-              .map(((__: object, index : number) => (
+            {users && users
+              .filter((__ : any) => __.idNguoiDung !== currentUser?.id && __?.tenNguoiDung.toLowerCase().includes(filter.toLowerCase()))
+              .map(((__: any, index : number) => (
                 <div
                   key={index}
                   onClick={() => handleToggle(__?.idNguoiDung)}

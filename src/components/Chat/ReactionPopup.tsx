@@ -10,7 +10,7 @@ interface ReactionPopupProps {
   forwardedRef: Ref<HTMLDivElement>;
   setIsOpened: (value: boolean) => void;
   messageId: string;
-  currentReaction: number;
+  currentReaction: number | string;
 }
 
 const ReactionPopup: FC<ReactionPopupProps> = ({

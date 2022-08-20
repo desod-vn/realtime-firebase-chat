@@ -43,7 +43,7 @@ const StickerPicker: FC<StickerPickerOpened> = ({ setIsOpened, onSelect }) => {
       {(ref) => (
         <div
           ref={ref}
-          className="border-dark-lighten absolute -left-16 bottom-full h-96 w-96 rounded-lg border-2 bg-[#222222] shadow-2xl"
+          className="border-dark-lighten absolute -left-16 bottom-full h-96 w-96 rounded-lg border-2 bg-stone-200 shadow-2xl"
         >
           {loading || error ? (
             <div className="flex h-full w-full items-center justify-center">
@@ -54,8 +54,8 @@ const StickerPicker: FC<StickerPickerOpened> = ({ setIsOpened, onSelect }) => {
               <div className="flex-grow overflow-y-auto p-3 pt-1">
                 {recentStickers.length > 0 && (
                   <>
-                    <h1 className="mt-2" id="sticker-recent">
-                      Recent stickers
+                    <h1 className="mt-2" id="sticker-recent font-white">
+                      Sử dụng gần đây
                     </h1>
                     <div className="grid w-full grid-cols-5 justify-between">
                       {recentStickers.map((url) => (

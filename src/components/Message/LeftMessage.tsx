@@ -175,7 +175,7 @@ const LeftMessage: FC<LeftMessageProps> = ({
                     setIsOpened={setIsSelectReactionOpened}
                     messageId={message.id as string}
                     currentReaction={
-                      message?.reactions?.[currentUser?.id as string]
+                      message?.reactions?.[currentUser?.id] || 0
                     }
                   />
                 )}

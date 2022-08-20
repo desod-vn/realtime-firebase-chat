@@ -51,7 +51,7 @@ const Chat: FC = () => {
           </>
         ) : !conversation ||
           error ||
-          !conversation.idMember.includes(currentUser?.id.toString()) ? (
+          !conversation.idMember.includes(currentUser.id.toString()) ? (
             <div className="flex h-full w-full flex-col items-center justify-center gap-6">
               <img className="h-32 w-32 object-cover" src="/error.svg" alt="" />
               <p className="text-center text-lg">Không tìm thấy cuộc trò chuyện</p>

@@ -10,7 +10,7 @@ interface AvatarFromIdProps {
 
 const AvatarFromId: FC<AvatarFromIdProps> = ({ uid, size = 30 }) => {
 
-  const [avatar, setAvatar] = useState('');
+  const [avatar, setAvatar] = useState(Object);
   const currentUser = useStore((state) => state.currentUser);
 
   useEffect(() => {

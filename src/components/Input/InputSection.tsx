@@ -136,7 +136,7 @@ const InputSection: FC<InputSectionProps> = ({
 
     updateTimestamp();
     if(!!conversation.userPing && conversation.userPing.length) {
-      conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item, conversationId))
+      conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item, conversationId as string))
     }
   };
 
@@ -248,7 +248,6 @@ const InputSection: FC<InputSectionProps> = ({
       setInputValue(inputValue + tagUser.find((__ : string) => __ != '') + ' ')
       setTagShow && setTagShow(false);
     }
-    console.log(tagUser);
   }, [tagUser])
 
   useEffect(() => {

@@ -7,11 +7,13 @@ export interface ConversationInfo {
   listAvatarmembers: string[];
   idMember: string[];
   nameMember: string[];
+  hostId?: string;
   userPing?: string[];
+  seen?: any;
 }
 
 
-export interface User {
+export interface UserInfo {
   id: number;
   email: string | null;
   ten: string;
@@ -24,6 +26,7 @@ export interface MessageItem {
   idRoom: string;
   nameFile?: string;
   reactions: string[];
+  replyTo?: any;
   timeStamp: {
     seconds: number;
     nanoseconds: number;

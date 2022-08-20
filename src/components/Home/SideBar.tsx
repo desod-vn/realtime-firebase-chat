@@ -152,7 +152,7 @@ const SideBar: FC = () => {
               onChange={(e) => setFilter(e.target.value)}
             />
             {data?.docs
-              .filter((__ : object) => __?.data().nameGroup.toLowerCase().includes(filter.toLowerCase()))
+              .filter((__ : any) => __?.data().nameGroup.toLowerCase().includes(filter.toLowerCase()))
               .map((item) => (
               <SelectConversation
                 key={item.id}

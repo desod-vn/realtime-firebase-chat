@@ -11,7 +11,7 @@ const EmojiPicker: FC<EmojiPickerProps> = ({ onSelect }) => {
       set="facebook"
       enableFrequentEmojiSort
       onSelect={onSelect}
-      theme="dark"
+      theme="light"
       showPreview={false}
       showSkinTones={false}
       emojiTooltip

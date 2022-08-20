@@ -15,6 +15,7 @@ import ReplyBadge from "../Chat/ReplyBadge";
 import ReplyIcon from "../Icon/ReplyIcon";
 import SpriteRenderer from "../SpriteRenderer";
 import { db } from "../../shared/firebase";
+import { useStore } from "../../store";
 
 interface RightMessageProps {
   message: MessageItem;
@@ -36,6 +37,7 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
     );
   };
 
+  const currentUser = useStore((state) => state.currentUser);
   const formattedDate = formatDate(
     message.timeStamp?.seconds ? message.timeStamp?.seconds * 1000 : Date.now()
   );
@@ -43,8 +45,8 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
   return (
     <div id={`message-${message.id}`}>
       <div className="-mb-2 flex justify-end px-8">
-        {!!message?.replyTo && (
-          <ReplyBadge messageId={message?.replyTo as string} />
+        {!!message.replyTo && (
+          <ReplyBadge messageId={message.replyTo as string} />
         )}
       </div>
       <div
@@ -167,7 +169,7 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
                     setIsOpened={setIsSelectReactionOpened}
                     messageId={message.id as string}
                     currentReaction={
-                      message.reactions?.[currentUser?.id as string] || 0
+                      message.reactions?.[currentUser.id] || 0
                     }
                   />
                 )}
