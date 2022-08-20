@@ -29,7 +29,7 @@ const ReactionStatus: FC<ReactionStatusProps> = ({ message, position }) => {
               return acc;
             }, {} as { [key: number]: number })
           )
-            .sort(([key1, value1], [key2, value2]) => value1 - value2)
+            .sort(([key1, value1] : any, [key2, value2] : any) => value1 - value2)
             .slice(0, 3)
             .map(([key, value]) => (
               <img

@@ -2,7 +2,7 @@ import create from "zustand";
 import { UserInfo } from "../shared/types"
 interface StoreType {
   currentUser: UserInfo | any | undefined | null;
-  setCurrentUser: (user: UserInfo) => void;
+  setCurrentUser: (user: UserInfo | null | any) => void;
 }
 
 

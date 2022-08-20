@@ -26,7 +26,7 @@ const App: FC = () => {
   }, [])
 
   onMessageListener()
-  .then((payload) => {
+  .then((payload : any) => {
     setIsAlertOpened(true);
     setNotification({title: payload?.notification?.title, body: payload?.notification?.body});     
   })
