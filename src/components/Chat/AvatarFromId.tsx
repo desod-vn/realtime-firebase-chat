@@ -4,7 +4,7 @@ import { useStore } from "../../store";
 import { BACKEND_API } from "../../shared/configs";
 
 interface AvatarFromIdProps {
-  uid: string;
+  uid: string | number;
   size?: number;
 }
 

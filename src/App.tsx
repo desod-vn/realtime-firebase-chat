@@ -34,10 +34,10 @@ const App: FC = () => {
 
   useEffect(() => {
     const user = localStorage.getItem('user') || null;
-      if (user) {
-        const parserUser = JSON.parse(user)
-        setCurrentUser(parserUser);
-      } else setCurrentUser(null);
+    if (user) {
+      const parserUser = JSON.parse(user)
+      setCurrentUser(parserUser);
+    } else setCurrentUser(null);
   }, []);
 
   if (typeof currentUser === "undefined")

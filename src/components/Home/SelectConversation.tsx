@@ -2,8 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { ConversationInfo } from "../../shared/types";
 import { FC } from "react";
 import { useStore } from "../../store";
-import { DEFAULT_AVATAR, IMAGE_PROXY } from "../../shared/constants";
 import { useLastMessage } from "../../hooks/useLastMessage";
+import AvatarFromId from "../Chat/AvatarFromId";
 
 interface SelectConversationProps {
   conversation: ConversationInfo;
@@ -20,7 +20,6 @@ const SelectConversation: FC<SelectConversationProps> = ({
   const {data: lastMessage} = useLastMessage(conversationId);
 
   if (conversation.nameMember.length === 2) {
-    const avatarUrl = ''
     return (
       <Link
         to={`/${conversationId}`}
@@ -30,10 +29,9 @@ const SelectConversation: FC<SelectConversationProps> = ({
           conversation?.seen && !conversation?.seen.includes("" + currentUser?.id) ? "bg-blue-500" : ""
         }`}
       >
-        <img
-          className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
-          src={!!avatarUrl ? IMAGE_PROXY(avatarUrl) : DEFAULT_AVATAR}
-          alt=""
+        <AvatarFromId 
+          uid={conversation.idMember.find(__ => __ != currentUser?.id) as string}
+          size={40}
         />
         <div className="flex flex-grow flex-col justify-center gap-1 py-1">
           <p className="max-w-[240px] flex-grow overflow-hidden text-ellipsis whitespace-nowrap">
@@ -47,7 +45,7 @@ const SelectConversation: FC<SelectConversationProps> = ({
           {conversation?.seen && !conversation?.seen.includes("" + currentUser?.id) ? (
             <i className='bx bxs-bullseye'></i>
           ) : ""}
-      </div>
+        </div>
       </Link>
     );
   }
