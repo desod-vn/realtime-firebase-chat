@@ -23,7 +23,6 @@ const SideBar: FC = () => {
     query(
       collection(db, "room"),
       where("idMember", "array-contains", currentUser?.id.toString()),
-      orderBy("timeStamp", "desc")
     )
   );
 
@@ -161,13 +160,16 @@ const SideBar: FC = () => {
                   .toLowerCase()
                   .includes(filter.toLowerCase())
               })
+              .sort((a : any, b : any) => {
+                return new Date(b.data().timeStamp?.seconds * 1000 ).getTime() - new Date(a.data().timeStamp?.seconds * 1000).getTime();
+              })
               .map((item) => (
-              <SelectConversation
-                key={item.id}
-                conversation={item.data() as ConversationInfo}
-                conversationId={item.id}
-              />
-            ))}
+                <SelectConversation
+                  key={item.id}
+                  conversation={item.data() as ConversationInfo}
+                  conversationId={item.id}
+                  />
+              ))}
           </div>
         )}
       </div>

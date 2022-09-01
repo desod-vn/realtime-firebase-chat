@@ -127,8 +127,8 @@ const InputSection: FC<InputSectionProps> = ({
         content: replacedInputValue.trim(),
         typeMessage: "text",
         timeStamp: serverTimestamp(),
-        nameFile: null,
-        replyTo: replyInfo?.id || null,
+        nameFile: '',
+        replyTo: replyInfo?.id || '',
       }
     );
 
@@ -149,7 +149,7 @@ const InputSection: FC<InputSectionProps> = ({
         content: url,
         typeMessage: "sticker",
         timeStamp: serverTimestamp(),
-        nameFile: null
+        nameFile: ''
       }
     );
 

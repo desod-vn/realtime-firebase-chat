@@ -104,13 +104,13 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
         firstMessage: "",
         idMember: sortedUser.map(__ => __.id),
         nameMember: sortedUser.map(__ => __.name),
-        listAvatarMember: sortedUser.map(__ => __.avatar),
+        listAvatarMember: [],
         timeStamp: serverTimestamp(),
         userPing: [],
         typeRoom: sortedUser.length == 2 ? 'private' : 'group',
         hostId: "" + currentUser?.id,
         nameGroup: sortedUser.length > 2 ? name : sortedUser.filter(__ => __.id !== currentUser?.id)[0].name,
-        avatarMember: sortedUser.length > 2 ? image : sortedUser.filter(__ => __.id !== currentUser?.id)[0].avatar,
+        avatarMember: sortedUser.length > 2 ? image : '',
       });
       setIsCreating(false);
       setIsOpened(false);
