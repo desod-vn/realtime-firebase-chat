@@ -184,7 +184,7 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
               .filter((__ : any) => __.idNguoiDung !== currentUser?.id && __?.tenNguoiDung.toLowerCase().includes(filter.toLowerCase()))
               .map(((__: any, index : number) => (
                 <div
-                  key={index}
+                  key={index + Math.random()}
                   onClick={() => handleToggle(__?.idNguoiDung)}
                   className="hover:bg-stone-400 flex cursor-pointer items-center gap-2 px-5 py-2 transition"
                 >
