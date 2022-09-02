@@ -38,7 +38,7 @@ const LeftMessage: FC<LeftMessageProps> = ({
   const [isImageViewOpened, setIsImageViewOpened] = useState(false);
 
   const formattedDate = formatDate(
-    message.timeStamp.seconds ? message.timeStamp.seconds * 1000 : Date.now()
+    message.timestamp.seconds ? message.timestamp.seconds * 1000 : Date.now()
   );
 
   return (

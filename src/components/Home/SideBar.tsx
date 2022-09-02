@@ -47,6 +47,16 @@ const SideBar: FC = () => {
   handlePing()
 
   const signOut = () => {
+    const pingUser = localStorage.getItem('pingToken') || null;
+    if (!!pingUser) {
+      data?.docs.map(item => {
+        if(Array.isArray(item.data()?.userPing) && item.data().userPing.includes(pingUser)) {
+          updateDoc(doc(db, "room", item.id), {
+            "userPing": item.data()?.userPing.filter((__ : any) => __ != pingUser),
+          });
+        }
+      })
+    }
     localStorage.clear();
     window.location.reload();
   }
@@ -161,7 +171,7 @@ const SideBar: FC = () => {
                   .includes(filter.toLowerCase())
               })
               .sort((a : any, b : any) => {
-                return new Date(b.data().timeStamp?.seconds * 1000 ).getTime() - new Date(a.data().timeStamp?.seconds * 1000).getTime();
+                return new Date(b.data().timestamp?.seconds * 1000 ).getTime() - new Date(a.data().timestamp?.seconds * 1000).getTime();
               })
               .map((item) => (
                 <SelectConversation

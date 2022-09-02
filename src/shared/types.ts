@@ -27,7 +27,7 @@ export interface MessageItem {
   nameFile?: string;
   reactions: string[];
   replyTo?: any;
-  timeStamp: {
+  timestamp: {
     seconds: number;
     nanoseconds: number;
   };

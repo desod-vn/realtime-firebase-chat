@@ -39,7 +39,7 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
 
   const currentUser = useStore((state) => state.currentUser);
   const formattedDate = formatDate(
-    message.timeStamp?.seconds ? message.timeStamp?.seconds * 1000 : Date.now()
+    message.timestamp?.seconds ? message.timestamp?.seconds * 1000 : Date.now()
   );
 
   return (

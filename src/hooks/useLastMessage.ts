@@ -26,7 +26,7 @@ export const useLastMessage = (conversationId: string) => {
       query(
         collection(db, "message"),
         where("idRoom", "==", conversationId),
-        orderBy("timeStamp"),
+        orderBy("timestamp"),
         limitToLast(1)
       ),
       (snapshot) => {

@@ -45,7 +45,7 @@ const ChatView: FC<ChatViewProps> = ({
     query(
       collection(db, "message"),
       where("idRoom", "==", conversationId?.toString()),
-      orderBy("timeStamp"),
+      orderBy("timestamp", "asc"),
       limitToLast(limitCount)
     )
   );

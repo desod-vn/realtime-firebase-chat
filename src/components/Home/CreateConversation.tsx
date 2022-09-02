@@ -40,6 +40,24 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
     })
     .catch((error) => console.log(error));
   }, []);
+
+
+  useEffect(() => {
+    fetch(BACKEND_API + '/User/user-get-by-id-token?userId=' + currentUser?.id, 
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + currentUser?.token
+      },
+      
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data)
+    })
+    .catch((error) => console.log(error));
+  }, []);
   
   const [users, setUsers] = useState<any[]>([]);
   const currentUser = useStore((state) => state.currentUser);
@@ -105,7 +123,7 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
         idMember: sortedUser.map(__ => __.id),
         nameMember: sortedUser.map(__ => __.name),
         listAvatarMember: [],
-        timeStamp: serverTimestamp(),
+        timestamp: serverTimestamp(),
         userPing: [],
         typeRoom: sortedUser.length == 2 ? 'private' : 'group',
         hostId: "" + currentUser?.id,

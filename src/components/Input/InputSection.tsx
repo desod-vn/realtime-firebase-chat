@@ -70,7 +70,7 @@ const InputSection: FC<InputSectionProps> = ({
       doc(db, "room", conversationId as string),
       {
         seen: ["" + currentUser?.id],
-        timeStamp: serverTimestamp(),
+        timestamp: serverTimestamp(),
     });
   };
 
@@ -126,7 +126,7 @@ const InputSection: FC<InputSectionProps> = ({
         author: "" + currentUser?.id,
         content: replacedInputValue.trim(),
         typeMessage: "text",
-        timeStamp: serverTimestamp(),
+        timestamp: serverTimestamp(),
         nameFile: '',
         replyTo: replyInfo?.id || '',
       }
@@ -135,6 +135,9 @@ const InputSection: FC<InputSectionProps> = ({
     setReplyInfo && setReplyInfo(null);
 
     updateTimestamp();
+    if(!!conversation.userPing && conversation.userPing.length) {
+      conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item, conversationId as string))
+    }
     if(!!conversation.userPing && conversation.userPing.length) {
       conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item, conversationId as string))
     }
@@ -148,7 +151,7 @@ const InputSection: FC<InputSectionProps> = ({
         author: "" + currentUser?.id,
         content: url,
         typeMessage: "sticker",
-        timeStamp: serverTimestamp(),
+        timestamp: serverTimestamp(),
         nameFile: ''
       }
     );
@@ -181,7 +184,7 @@ const InputSection: FC<InputSectionProps> = ({
           author: "" + currentUser?.id,
           content: downloadURL,
           typeMessage: "image",
-          timeStamp: serverTimestamp(),
+          timestamp: serverTimestamp(),
           nameFile: file.name
         },
       );
