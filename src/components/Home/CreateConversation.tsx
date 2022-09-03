@@ -41,24 +41,6 @@ const CreateConversation: FC<CreateConversationProps> = ({ setIsOpened }) => {
     .catch((error) => console.log(error));
   }, []);
 
-
-  useEffect(() => {
-    fetch(BACKEND_API + '/User/user-get-by-id-token?userId=' + currentUser?.id, 
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + currentUser?.token
-      },
-      
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data)
-    })
-    .catch((error) => console.log(error));
-  }, []);
-  
   const [users, setUsers] = useState<any[]>([]);
   const currentUser = useStore((state) => state.currentUser);
   const fileInputRef = useRef<HTMLInputElement>(null);
