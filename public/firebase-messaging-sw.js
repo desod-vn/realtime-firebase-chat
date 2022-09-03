@@ -25,7 +25,7 @@ messaging.onBackgroundMessage(function(payload) {
 });
 
 self.addEventListener('notificationclick', function(event) {
-  let url = 'http://localhost:3000';
+  let url = 'https://vsofh.vn:8443';
   event.notification.close();
   event.waitUntil(
       clients.matchAll({type: 'window'}).then( windowClients => {
