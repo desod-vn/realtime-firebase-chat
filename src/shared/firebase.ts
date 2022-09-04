@@ -32,7 +32,7 @@ export const onMessageListener = () =>
 export const handlePushNotify = (noti: string, to: string, conversationId: string) => {
   const pingUser = localStorage.getItem('pingToken') || null;
   if (to != pingUser) {
-    fetch('https://fcm.googleapis.com/fcm/send',
+    return fetch('https://fcm.googleapis.com/fcm/send',
       {
         method: 'POST',
         headers: {

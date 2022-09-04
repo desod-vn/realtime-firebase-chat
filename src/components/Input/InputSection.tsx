@@ -138,9 +138,6 @@ const InputSection: FC<InputSectionProps> = ({
     if(!!conversation.userPing && conversation.userPing.length) {
       conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item, conversationId as string))
     }
-    if(!!conversation.userPing && conversation.userPing.length) {
-      conversation.userPing.map((item : string) => handlePushNotify(currentUser?.ten + ': ' + replacedInputValue.trim(), item, conversationId as string))
-    }
   };
 
   const sendSticker = (url: string) => {

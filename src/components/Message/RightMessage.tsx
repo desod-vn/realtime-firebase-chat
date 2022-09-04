@@ -16,6 +16,7 @@ import ReplyIcon from "../Icon/ReplyIcon";
 import SpriteRenderer from "../SpriteRenderer";
 import { db } from "../../shared/firebase";
 import { useStore } from "../../store";
+import { confirm } from "react-confirm-box";
 
 interface RightMessageProps {
   message: MessageItem;
@@ -26,9 +27,9 @@ interface RightMessageProps {
 const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
   const [isSelectReactionOpened, setIsSelectReactionOpened] = useState(false);
   const [isImageViewOpened, setIsImageViewOpened] = useState(false);
-  const removeMessage = (messageId: string) => {
-    let text = "Bạn muốn thu hồi tin nhắn ?";
-    if (window.confirm(text) == false) {
+  const removeMessage = async (messageId: string) => {
+    const result = await confirm("Bạn có muốn thu hồi tin nhắn ?");
+    if (!result) {
       return;
     }
     updateDoc(
