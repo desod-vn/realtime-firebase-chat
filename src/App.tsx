@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import BarWave from "react-cssfx-loading/src/BarWave";
 import Chat from "./pages/Chat";
 import Home from "./pages/Home";
@@ -24,6 +24,11 @@ const App: FC = () => {
       localStorage.clear();
     }
   }, [])
+
+  window.onbeforeunload = function(event)
+  {
+    return <Navigate to="/" replace />
+  };
 
   onMessageListener()
   .then((payload : any) => {
@@ -69,11 +74,7 @@ const App: FC = () => {
         />
         <Route
           path="*"
-          element={
-            <PrivateRoute>
-              <Chat />
-            </PrivateRoute>
-          }
+          element={<Navigate to="/" replace />}
         />
       </Routes>
       <Alert
