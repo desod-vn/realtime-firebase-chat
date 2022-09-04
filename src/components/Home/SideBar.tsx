@@ -58,7 +58,7 @@ const SideBar: FC = () => {
       })
     }
     localStorage.clear();
-    window.location.reload();
+    window.location.replace('/');
   }
   const location = useLocation();
 
@@ -162,8 +162,10 @@ const SideBar: FC = () => {
             />
             {data?.docs
               .filter((__ : any) => {
-                if (__.data().idMember > 2) {
-                  return __.data().nameGroup.includes(filter.toLowerCase())
+                if (__.data().idMember.length > 2) {
+                  return __.data().nameGroup
+                  .toLowerCase()
+                  .includes(filter.toLowerCase())
                 }
                 return __.data().nameMember
                   .filter((__ : string) => __ != currentUser.ten)[0]

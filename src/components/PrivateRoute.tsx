@@ -27,6 +27,7 @@ const PrivateRoute: FC = ({ children }) => {
           var current = new Date();
           var followingDay = new Date(current.getTime() + 86400000);
           localStorage.setItem('expired', JSON.stringify(followingDay.getTime()));
+          window.location.replace('/');
         }
       })
       .catch((error) => console.log(error));

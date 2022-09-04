@@ -25,11 +25,6 @@ const App: FC = () => {
     }
   }, [])
 
-  window.onbeforeunload = function(event)
-  {
-    return <Navigate to="/" replace />
-  };
-
   onMessageListener()
   .then((payload : any) => {
     setIsAlertOpened(true);
