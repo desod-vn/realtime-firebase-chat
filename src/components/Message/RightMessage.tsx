@@ -28,7 +28,7 @@ const RightMessage: FC<RightMessageProps> = ({ message, setReplyInfo }) => {
   const [isImageViewOpened, setIsImageViewOpened] = useState(false);
   const removeMessage = (messageId: string) => {
     let text = "Bạn muốn thu hồi tin nhắn ?";
-    if (confirm(text) == false) {
+    if (window.confirm(text) == false) {
       return;
     }
     updateDoc(
