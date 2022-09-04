@@ -67,6 +67,14 @@ const App: FC = () => {
             </PrivateRoute>
           }
         />
+        <Route
+          path="*"
+          element={
+            <PrivateRoute>
+              <Chat />
+            </PrivateRoute>
+          }
+        />
       </Routes>
       <Alert
         isOpened={isAlertOpened}
